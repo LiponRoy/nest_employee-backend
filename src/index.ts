@@ -1,15 +1,23 @@
-import express, { Express, Request, Response } from 'express';
-import dotenv from 'dotenv';
+import mongoose from 'mongoose';
+import config from './config';
 
-dotenv.config();
+import { Server } from 'http';
+import app from './app';
 
-const app: Express = express();
-const port = process.env.PORT || 3000;
-
-app.get('/', (req: Request, res: Response) => {
-	res.send('Express + TypeScript Server');
-});
-
-app.listen(port, () => {
-	console.log(`[server]: Server is running at http://localhost:${port}`);
-});
+let server: Server;
+//console.log(ab);
+const main = async () => {
+	try {
+		// Mongodb connection
+		await mongoose.connect(config.mongodb_url as string);
+		console.log('Mongodb Connected');
+		// Server creation
+		server = app.listen(config.port, () => {
+			console.log(`App listening on port -YES  ${config.port}`);
+		});
+	} catch (error) {
+		console.log(`Failed to connect database ${error}`);
+	}
+	//...........
+};
+main();
