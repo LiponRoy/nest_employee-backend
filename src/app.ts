@@ -1,5 +1,6 @@
 import express, { Application, NextFunction, Request, Response } from 'express';
 import cors from 'cors';
+import globalErrorHandler from './middlewares/globalErrorHandler';
 
 const app: Application = express();
 
@@ -13,5 +14,8 @@ app.use(express.urlencoded({ extended: true }));
 app.get('/test', (req: Request, res: Response, next: NextFunction) => {
 	res.send('This is Testing Router...');
 });
+
+// error middleware ...
+app.use(globalErrorHandler);
 
 export default app;
