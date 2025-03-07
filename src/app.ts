@@ -4,6 +4,7 @@ import cookieParser from 'cookie-parser';
 import globalErrorHandler from './middlewares/globalErrorHandler';
 import notFound from './middlewares/notFound';
 import { AuthRoutes } from './modules/Auth/auth.route';
+import { CompanyRoutes } from './modules/company/company.route';
 
 const app: Application = express();
 
@@ -15,6 +16,7 @@ app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 
 app.use('/api/v1/auth', AuthRoutes);
+app.use('/api/v1/company', CompanyRoutes);
 
 // Testing
 app.get('/test', (req: Request, res: Response, next: NextFunction) => {
