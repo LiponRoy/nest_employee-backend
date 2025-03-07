@@ -59,7 +59,13 @@ const loginUser = async (payload: IUser) => {
 	};
 };
 
+const profile = async (email: string) => {
+	const result = await UserModel.findOne({ email });
+	return result;
+};
+
 export const AuthServices = {
 	signupUser,
 	loginUser,
+	profile,
 };

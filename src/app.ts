@@ -1,5 +1,6 @@
 import express, { Application, NextFunction, Request, Response } from 'express';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 import globalErrorHandler from './middlewares/globalErrorHandler';
 import notFound from './middlewares/notFound';
 import { AuthRoutes } from './modules/Auth/auth.route';
@@ -8,6 +9,7 @@ const app: Application = express();
 
 //parsers
 app.use(express.json());
+app.use(cookieParser());
 //middlewares
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));

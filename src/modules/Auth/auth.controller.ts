@@ -55,8 +55,21 @@ const logout = catchAsyncError(async (req: Request, res: Response) => {
 	});
 });
 
+const profile = catchAsyncError(async (req: Request, res: Response) => {
+	const { email } = req.user;
+	const result = await AuthServices.profile(email);
+
+	sendResponse(res, {
+		statusCode: httpStatus.OK,
+		success: true,
+		message: 'User is retrieved successfully',
+		data: result,
+	});
+});
+
 export const AuthControllers = {
 	signupUser,
 	loginUser,
 	logout,
+	profile,
 };
