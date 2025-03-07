@@ -2,6 +2,7 @@ import express, { Application, NextFunction, Request, Response } from 'express';
 import cors from 'cors';
 import globalErrorHandler from './middlewares/globalErrorHandler';
 import notFound from './middlewares/notFound';
+import { AuthRoutes } from './modules/Auth/auth.route';
 
 const app: Application = express();
 
@@ -10,6 +11,8 @@ app.use(express.json());
 //middlewares
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
+
+app.use('/api/v1/auth', AuthRoutes);
 
 // Testing
 app.get('/test', (req: Request, res: Response, next: NextFunction) => {
