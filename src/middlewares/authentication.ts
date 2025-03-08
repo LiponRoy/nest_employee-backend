@@ -4,7 +4,7 @@ import jwt, { JwtPayload } from 'jsonwebtoken';
 import config from '../config';
 import { catchAsyncError } from '../utils/catchAsyncErrors';
 import ApiError from '../errors/ApiError';
-import { UserModel } from '../modules/Auth/auth.model';
+import { UserModel } from '../modules/auth/auth.model';
 
 export const isAuthenticated = () => {
 	return catchAsyncError(
