@@ -1,0 +1,22 @@
+import httpStatus from 'http-status';
+import sendResponse from '../../utils/sendResponse';
+import { catchAsyncError } from '../../utils/catchAsyncErrors';
+import { Request, Response } from 'express';
+import { JobServices } from './job.service';
+
+const jobCreate = catchAsyncError(async (req: Request, res: Response) => {
+	const { ...jobInfo } = req.body;
+
+	const jobData = await JobServices.jobCreate(jobInfo);
+
+	sendResponse(res, {
+		statusCode: httpStatus.OK,
+		success: true,
+		message: 'job Create Successfully',
+		data: jobData,
+	});
+});
+
+export const JobControllers = {
+	jobCreate,
+};
