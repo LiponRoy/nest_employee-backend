@@ -7,9 +7,12 @@ import { ApplicationServices } from './application.service';
 const applicationCreate = catchAsyncError(
 	async (req: Request, res: Response) => {
 		const { ...applicationInfo } = req.body;
+		const { jobId } = req.params;
 
 		const applicationData = await ApplicationServices.applicationCreate(
-			applicationInfo
+			applicationInfo,
+			jobId,
+			req.user
 		);
 
 		sendResponse(res, {

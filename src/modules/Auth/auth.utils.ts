@@ -1,7 +1,7 @@
 import jwt, { JwtPayload, SignOptions } from 'jsonwebtoken';
 
 export const createToken = (
-	jwtPayload: { email: string; role: string },
+	jwtPayload: { userId: unknown; email: string; role: string },
 	secret: string,
 	expiresIn: string | number // Allowing both string and number for expiresIn
 ) => {

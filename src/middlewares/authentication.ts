@@ -9,35 +9,22 @@ import { UserModel } from '../modules/auth/auth.model';
 export const isAuthenticated = () => {
 	return catchAsyncError(
 		async (req: Request, res: Response, next: NextFunction) => {
-			const token = req.cookies.authToken;
-			// checking if the token is missing
+			const token = req.cookies.authToken; // Get token from the cookie
+
 			if (!token) {
-				throw new ApiError(
-					httpStatus.UNAUTHORIZED,
-					'Login first to access this resource.'
-				);
+				return res.status(401).json({ message: 'No token provided' });
 			}
 
 			try {
-				// Verify the token
 				const decoded = jwt.verify(
 					token,
 					config.jwt_auth_secret as string
 				) as JwtPayload;
-
-				console.log('decoded ', decoded);
-
-				// Attach the user payload to the request object
-				req.user = (await UserModel.isUserExistsByEmail(
-					decoded.email
-				)) as JwtPayload;
-
-				console.log('req.user ', req.user.role);
-
-				// Proceed to the next middleware or controllers
+				req.user = decoded; // Add decoded info to request object
+				// console.log(' req.user ....:', req.user.userId);
 				next();
 			} catch (error) {
-				throw new ApiError(httpStatus.UNAUTHORIZED, 'Invalid token !');
+				return res.status(401).json({ message: 'Invalid or expired token' });
 			}
 		}
 	);

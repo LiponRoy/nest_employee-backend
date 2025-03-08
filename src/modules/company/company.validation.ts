@@ -16,7 +16,7 @@ const companyValidationZodSchema = z.object({
 		location: z
 			.string()
 			.min(1, { message: 'Name must be at least 1 characters long' }),
-		userId: z.string().refine((val) => Types.ObjectId.isValid(val), {
+		creator: z.string().refine((val) => Types.ObjectId.isValid(val), {
 			message: 'Invalid userId format',
 		}),
 	}),

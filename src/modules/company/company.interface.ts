@@ -5,5 +5,5 @@ export interface ICompany {
 	description: string;
 	website: string;
 	location: string;
-	userId: Types.ObjectId;
+	creator: Types.ObjectId;
 }

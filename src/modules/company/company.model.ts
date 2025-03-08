@@ -17,7 +17,7 @@ const companySchema = new Schema<ICompany>(
 		location: {
 			type: String,
 		},
-		userId: {
+		creator: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: 'User',
 			required: true,

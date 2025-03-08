@@ -1,5 +1,6 @@
 import httpStatus from 'http-status';
 import config from '../../config';
+import jwt from 'jsonwebtoken';
 import ApiError from '../../errors/ApiError';
 import { IUser } from './auth.interface';
 import { UserModel } from './auth.model';
@@ -41,16 +42,11 @@ const loginUser = async (payload: IUser) => {
 	if (!(await UserModel.isPasswordMatched(payload?.password, user?.password)))
 		throw new ApiError(httpStatus.FORBIDDEN, 'Password do not matched');
 
-	//create token and sent to the  client
-	const jwtPayload = {
-		email: user.email,
-		role: user.role,
-	};
-
-	const authToken = createToken(
-		jwtPayload,
+	// Generate JWT token
+	const authToken = jwt.sign(
+		{ userId: user._id },
 		config.jwt_auth_secret as string,
-		config.jwt_auth_expires_in as string
+		{ expiresIn: '1h' }
 	);
 
 	return {
