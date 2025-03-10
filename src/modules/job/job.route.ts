@@ -11,5 +11,6 @@ router.post(
 	// isAuthenticated(),
 	JobControllers.jobCreate
 );
+router.get('/all', JobControllers.allJob);
 
 export const JobRoutes = router;

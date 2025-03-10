@@ -56,6 +56,17 @@ const jobCreate = async (
 	}
 };
 
+const allJob = async () => {
+	const jobs = await JobModel.find();
+
+	if (!jobs) {
+		throw new ApiError(409, 'jobs not found .');
+	}
+
+	return jobs;
+};
+
 export const JobServices = {
 	jobCreate,
+	allJob,
 };

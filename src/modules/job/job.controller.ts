@@ -17,7 +17,18 @@ const jobCreate = catchAsyncError(async (req: Request, res: Response) => {
 		data: jobData,
 	});
 });
+const allJob = catchAsyncError(async (req: Request, res: Response) => {
+	const jobData = await JobServices.allJob();
+
+	sendResponse(res, {
+		statusCode: httpStatus.OK,
+		success: true,
+		message: 'jobs Getting Successfully',
+		data: jobData,
+	});
+});
 
 export const JobControllers = {
 	jobCreate,
+	allJob,
 };
