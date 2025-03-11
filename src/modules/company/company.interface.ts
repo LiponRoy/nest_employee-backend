@@ -2,8 +2,12 @@ import { Model, Types } from 'mongoose';
 
 export interface ICompany {
 	name: string;
-	description: string;
+	title: string;
+	about: string;
 	website: string;
 	location: string;
+	teamMember: number;
+	officeBranches: number;
+	FoundedDate: string;
 	creator: Types.ObjectId;
 }

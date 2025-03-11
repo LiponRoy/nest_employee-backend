@@ -6,11 +6,7 @@ import { JobControllers } from './job.controller';
 
 const router = express.Router();
 
-router.post(
-	'/create',
-	// isAuthenticated(),
-	JobControllers.jobCreate
-);
+router.post('/create/:companyId', isAuthenticated(), JobControllers.jobCreate);
 router.get('/all', JobControllers.allJob);
 
 export const JobRoutes = router;
