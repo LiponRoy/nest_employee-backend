@@ -7,6 +7,7 @@ import { AuthRoutes } from './modules/auth/auth.route';
 import { CompanyRoutes } from './modules/company/company.route';
 import { JobRoutes } from './modules/job/job.route';
 import { ApplicationRoutes } from './modules/application/application.route';
+import { profileRoutes } from './modules/profile/profile.route';
 
 const app: Application = express();
 
@@ -18,6 +19,7 @@ app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 
 app.use('/api/v1/auth', AuthRoutes);
+app.use('/api/v1/profile', profileRoutes);
 app.use('/api/v1/company', CompanyRoutes);
 app.use('/api/v1/job', JobRoutes);
 app.use('/api/v1/application', ApplicationRoutes);

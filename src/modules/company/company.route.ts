@@ -10,7 +10,7 @@ const router = express.Router();
 router.post(
 	'/create',
 	isAuthenticated(),
-	validateRequest(CompanyValidation.companyValidationZodSchema),
+	// validateRequest(CompanyValidation.companyValidationZodSchema),
 	CompanyControllers.companyCreate
 );
 
