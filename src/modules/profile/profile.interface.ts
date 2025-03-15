@@ -1,8 +1,7 @@
 import { Model, Types } from 'mongoose';
 
 export interface IProfile {
-	name: string;
-	email: string;
+	userId: Types.ObjectId;
 	phone: string;
 	bio: string;
 	address: string;
@@ -10,5 +9,4 @@ export interface IProfile {
 	skills: string[];
 	education: string[];
 	experience: string[];
-	user: Types.ObjectId;
 }

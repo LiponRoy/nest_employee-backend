@@ -3,16 +3,14 @@ import { IProfile } from './profile.interface';
 
 const profileSchema = new Schema<IProfile>(
 	{
-		name: { type: String, required: true },
-		email: { type: String, required: true, unique: true },
-		phone: { type: String, required: true },
-		bio: { type: String, required: true },
-		address: { type: String, required: true },
-		about: { type: String, required: true },
-		skills: { type: [String], required: true },
-		education: { type: [String], required: true },
-		experience: { type: [String], required: true },
-		user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+		userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+		phone: { type: String },
+		bio: { type: String },
+		address: { type: String },
+		about: { type: String },
+		skills: { type: [String] },
+		education: { type: [String] },
+		experience: { type: [String] },
 	},
 	{
 		timestamps: true,

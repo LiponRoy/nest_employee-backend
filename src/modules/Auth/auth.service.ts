@@ -5,29 +5,54 @@ import ApiError from '../../errors/ApiError';
 import { IUser } from './auth.interface';
 import { UserModel } from './auth.model';
 import { createToken } from './auth.utils';
+import { profileModel } from '../profile/profile.model';
+import mongoose from 'mongoose';
 
 const signupUser = async (payload: IUser) => {
-	const { email } = payload;
-	// Check if user exists
-	const user = await UserModel.isUserExistsByEmail(email);
+	const session = await mongoose.startSession();
+	session.startTransaction(); // Start the transaction
 
-	if (user) {
-		throw new ApiError(409, 'User already exists');
+	try {
+		const { email } = payload;
+		// Check if user exists
+		const user = await UserModel.isUserExistsByEmail(email);
+
+		if (user) {
+			throw new ApiError(409, 'User already exists');
+		}
+
+		// create user
+		const newUser = new UserModel({
+			...payload,
+		});
+		await newUser.save({ session });
+
+		// Create empty profile with only userId
+		const newProfile = new profileModel({ userId: newUser._id });
+		await newProfile.save({ session });
+
+		// If failed to create an user
+		if (!newUser) {
+			throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to create user');
+		}
+
+		// Commit transaction
+		await session.commitTransaction();
+
+		return {
+			newUser,
+		};
+	} catch (error: any) {
+		// Rollback the transaction in case of an error
+		await session.abortTransaction();
+		throw new ApiError(
+			400,
+			error.message || 'An error occurred while creating the product.'
+		);
+	} finally {
+		// Ensure the session is always ended
+		session.endSession();
 	}
-
-	// create user
-	const newUser = await UserModel.create({
-		...payload,
-	});
-
-	// If failed to create an user
-	if (!newUser) {
-		throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to create user');
-	}
-
-	return {
-		newUser,
-	};
 };
 
 const loginUser = async (payload: IUser) => {

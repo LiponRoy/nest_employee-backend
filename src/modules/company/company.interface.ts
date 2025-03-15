@@ -9,5 +9,6 @@ export interface ICompany {
 	teamMember: number;
 	officeBranches: number;
 	FoundedDate: string;
+	jobs: Types.ObjectId[];
 	creator: Types.ObjectId;
 }

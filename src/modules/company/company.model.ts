@@ -11,6 +11,7 @@ const companySchema = new Schema<ICompany>(
 		teamMember: { type: Number, required: true },
 		officeBranches: { type: Number, required: true },
 		FoundedDate: { type: String, required: true },
+		jobs: [{ type: Schema.Types.ObjectId, ref: 'Job' }],
 		creator: { type: Schema.Types.ObjectId, ref: 'User', required: true },
 	},
 	{

@@ -4,6 +4,6 @@ import { profileControllers } from './profile.controller';
 
 const router = express.Router();
 
-router.post('/create', isAuthenticated(), profileControllers.profileCreate);
+router.put('/update', isAuthenticated(), profileControllers.profileUpdate);
 
 export const profileRoutes = router;
