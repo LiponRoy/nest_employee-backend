@@ -2,6 +2,7 @@ import { Schema, model } from 'mongoose';
 import { IUser, IUserModel } from './auth.interface';
 import bcrypt from 'bcrypt';
 import config from '../../config';
+import { UserRole } from '../../enums/user';
 
 const userSchema = new Schema<IUser>(
 	{
@@ -20,8 +21,10 @@ const userSchema = new Schema<IUser>(
 		},
 		role: {
 			type: String,
-			enum: ['admin', 'user'],
-			default: 'user',
+			// JobSeeker,who can apply for job and update his profile
+			// Employer, who can create company and create job post
+			enum: [UserRole.JOB_SEEKER, UserRole.EMPLOYER, UserRole.ADMIN],
+			default: UserRole.JOB_SEEKER,
 		},
 	},
 	{

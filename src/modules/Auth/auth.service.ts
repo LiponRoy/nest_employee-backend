@@ -69,7 +69,7 @@ const loginUser = async (payload: IUser) => {
 
 	// Generate JWT token
 	const authToken = jwt.sign(
-		{ userId: user._id },
+		{ userId: user._id, userRole: user.role },
 		config.jwt_auth_secret as string,
 		{ expiresIn: '1h' }
 	);

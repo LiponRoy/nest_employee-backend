@@ -21,7 +21,8 @@ export const isAuthenticated = () => {
 					config.jwt_auth_secret as string
 				) as JwtPayload;
 				req.user = decoded; // Add decoded info to request object
-				// console.log(' req.user ....:', req.user.userId);
+				// console.log(' req.user id ....:', req.user.userId);
+				// console.log(' req.user role....:', req.user.userRole);
 				next();
 			} catch (error) {
 				return res.status(401).json({ message: 'Invalid or expired token' });
@@ -33,10 +34,10 @@ export const isAuthenticated = () => {
 // Handling users roles
 export const authorizeRoles = (...roles: any) => {
 	return (req: Request, res: Response, next: NextFunction) => {
-		if (!roles.includes(req.user.role)) {
+		if (!roles.includes(req.user.userRole)) {
 			throw new ApiError(
 				httpStatus.UNAUTHORIZED,
-				`Role (${req.user.role}) is not allowed to acccess this resource`
+				`Role (${req.user.userRole}) is not allowed to acccess this resource`
 			);
 		}
 		next();

@@ -1,10 +1,11 @@
 import { Document, Model } from 'mongoose';
+import { UserRole } from '../../enums/user';
 
 export interface IUser extends Document {
 	name: string;
 	email: string;
 	password: string;
-	role: 'admin' | 'user';
+	role: UserRole.JOB_SEEKER | UserRole.EMPLOYER | UserRole.ADMIN;
 }
 
 export interface ILoginUser {
