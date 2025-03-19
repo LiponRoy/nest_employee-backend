@@ -13,7 +13,7 @@ const userValidationZodSchema = z.object({
 			.string()
 			.min(5, { message: 'Password must be at least 5 characters' }),
 
-		role: z.enum(['admin', 'user']).default('user'),
+		role: z.enum(['job_seeker', 'employer']).default('job_seeker'),
 	}),
 });
 

@@ -8,6 +8,7 @@ import { CompanyRoutes } from './modules/company/company.route';
 import { JobRoutes } from './modules/job/job.route';
 import { ApplicationRoutes } from './modules/application/application.route';
 import { profileRoutes } from './modules/profile/profile.route';
+import config from './config';
 
 const app: Application = express();
 
@@ -15,7 +16,13 @@ const app: Application = express();
 app.use(express.json());
 app.use(cookieParser());
 //middlewares
-app.use(cors());
+// app.use(cors());
+app.use(
+	cors({
+		origin: config.frontend_URL,
+		credentials: true, // Allow cookies
+	})
+);
 app.use(express.urlencoded({ extended: true }));
 
 app.use('/api/v1/auth', AuthRoutes);
