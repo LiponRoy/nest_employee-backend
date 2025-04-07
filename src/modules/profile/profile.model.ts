@@ -4,13 +4,22 @@ import { IProfile } from './profile.interface';
 const profileSchema = new Schema<IProfile>(
 	{
 		userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-		phone: { type: String },
-		bio: { type: String },
-		address: { type: String },
-		about: { type: String },
-		skills: { type: [String] },
-		education: { type: [String] },
-		experience: { type: [String] },
+		generalInfo: {
+			phone: { type: String },
+			gender: { type: String },
+			age: { type: Number },
+			bio: { type: String },
+			address: { type: String },
+			about: { type: String },
+		},
+		education: [
+			{
+				instituteName: { type: String },
+				degree: { type: String },
+				cgpa: { type: String },
+				passingYear: { type: Number },
+			},
+		],
 	},
 	{
 		timestamps: true,

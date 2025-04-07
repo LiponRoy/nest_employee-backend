@@ -56,13 +56,13 @@ const logout = catchAsyncError(async (req: Request, res: Response) => {
 });
 
 const profile = catchAsyncError(async (req: Request, res: Response) => {
-	const { email } = req.user;
-	const result = await AuthServices.profile(email);
+	const { userId } = req.user;
+	const result = await AuthServices.profile(userId);
 
 	sendResponse(res, {
 		statusCode: httpStatus.OK,
 		success: true,
-		message: 'User is retrieved successfully',
+		message: 'Profile is retrieved successfully',
 		data: result,
 	});
 });

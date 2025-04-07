@@ -80,8 +80,8 @@ const loginUser = async (payload: IUser) => {
 	};
 };
 
-const profile = async (email: string) => {
-	const result = await UserModel.findOne({ email });
+const profile = async (userId: string) => {
+	const result = await UserModel.findOne({ _id: userId });
 	return result;
 };
 

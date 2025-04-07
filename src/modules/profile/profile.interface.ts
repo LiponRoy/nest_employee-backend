@@ -1,12 +1,22 @@
-import { Model, Types } from 'mongoose';
+import { Types } from 'mongoose';
 
-export interface IProfile {
-	userId: Types.ObjectId;
+export interface IgeneralInfo {
 	phone: string;
+	gender: string;
+	age: number;
 	bio: string;
 	address: string;
 	about: string;
-	skills: string[];
-	education: string[];
-	experience: string[];
+}
+export interface IEducation {
+	instituteName: string;
+	degree: string;
+	cgpa: string;
+	passingYear: number;
+}
+
+export interface IProfile {
+	userId: Types.ObjectId;
+	generalInfo: IgeneralInfo;
+	education: IEducation[];
 }

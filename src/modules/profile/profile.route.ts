@@ -4,6 +4,15 @@ import { profileControllers } from './profile.controller';
 
 const router = express.Router();
 
-router.put('/update', isAuthenticated(), profileControllers.profileUpdate);
+router.put(
+	'/updateGeneralInfo',
+	isAuthenticated(),
+	profileControllers.generalInfoUpdate
+);
+router.put(
+	'/updateEducation',
+	isAuthenticated(),
+	profileControllers.updateEducation
+);
 
 export const profileRoutes = router;
