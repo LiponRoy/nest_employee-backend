@@ -24,6 +24,7 @@ export interface IExperience {
 export interface IProfile {
 	userId: Types.ObjectId;
 	generalInfo: IgeneralInfo;
+	skills: string[];
 	education: IEducation[];
 	experience: IExperience[];
 }

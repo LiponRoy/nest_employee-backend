@@ -35,6 +35,26 @@ const generalInfoUpdate = async (
 	return updatedProfile;
 };
 
+const updateSkills = async (skills: string[], currentUser: JwtPayload) => {
+	const loginUser = currentUser.userId;
+
+	const updatedProfile = await profileModel.findOneAndUpdate(
+		{ userId: loginUser },
+		{
+			$set: {
+				skills,
+			},
+		},
+		{ new: true }
+	);
+
+	if (!updatedProfile) {
+		throw new ApiError(400, 'Failed to Update Skills');
+	}
+
+	return updatedProfile;
+};
+
 interface IEducationPayload {
 	education: {
 		collegeName: string;
@@ -91,6 +111,7 @@ const updateExperience = async (
 
 export const profileServices = {
 	generalInfoUpdate,
+	updateSkills,
 	updateEducation,
 	updateExperience,
 };

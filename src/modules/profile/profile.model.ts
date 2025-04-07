@@ -12,6 +12,7 @@ const profileSchema = new Schema<IProfile>(
 			address: { type: String },
 			about: { type: String },
 		},
+		skills: { type: [String] },
 		education: [
 			{
 				instituteName: { type: String },

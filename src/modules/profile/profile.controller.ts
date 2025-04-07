@@ -23,6 +23,19 @@ const generalInfoUpdate = catchAsyncError(
 	}
 );
 
+const updateSkills = catchAsyncError(async (req: Request, res: Response) => {
+	const { skills } = req.body;
+
+	const profileSkills = await profileServices.updateSkills(skills, req.user);
+
+	sendResponse(res, {
+		statusCode: httpStatus.OK,
+		success: true,
+		message: 'Skills updated successfully',
+		data: profileSkills?.skills,
+	});
+});
+
 const updateEducation = catchAsyncError(async (req: Request, res: Response) => {
 	const educationData = req.body;
 
@@ -56,6 +69,7 @@ const updateExperience = catchAsyncError(
 
 export const profileControllers = {
 	generalInfoUpdate,
+	updateSkills,
 	updateEducation,
 	updateExperience,
 };

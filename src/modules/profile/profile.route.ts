@@ -9,6 +9,8 @@ router.put(
 	isAuthenticated(),
 	profileControllers.generalInfoUpdate
 );
+router.put('/updateSkills', isAuthenticated(), profileControllers.updateSkills);
+
 router.put(
 	'/updateEducation',
 	isAuthenticated(),
