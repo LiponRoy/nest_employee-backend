@@ -36,7 +36,26 @@ const updateEducation = catchAsyncError(async (req: Request, res: Response) => {
 	});
 });
 
+const updateExperience = catchAsyncError(
+	async (req: Request, res: Response) => {
+		const experienceData = req.body;
+
+		const result = await profileServices.updateExperience(
+			experienceData,
+			req.user
+		);
+
+		sendResponse(res, {
+			statusCode: httpStatus.OK,
+			success: true,
+			message: 'Experience updated successfully',
+			data: result.experience,
+		});
+	}
+);
+
 export const profileControllers = {
 	generalInfoUpdate,
 	updateEducation,
+	updateExperience,
 };

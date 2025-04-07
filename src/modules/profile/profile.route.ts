@@ -15,4 +15,10 @@ router.put(
 	profileControllers.updateEducation
 );
 
+router.put(
+	'/updateExperience',
+	isAuthenticated(),
+	profileControllers.updateExperience
+);
+
 export const profileRoutes = router;

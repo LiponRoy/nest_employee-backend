@@ -20,6 +20,13 @@ const profileSchema = new Schema<IProfile>(
 				passingYear: { type: Number },
 			},
 		],
+		experience: [
+			{
+				organizationName: { type: String },
+				yearsOfExperience: { type: Number },
+				position: { type: String },
+			},
+		],
 	},
 	{
 		timestamps: true,

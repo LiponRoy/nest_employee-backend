@@ -15,8 +15,15 @@ export interface IEducation {
 	passingYear: number;
 }
 
+export interface IExperience {
+	organizationName: string;
+	yearsOfExperience: number;
+	position: string;
+}
+
 export interface IProfile {
 	userId: Types.ObjectId;
 	generalInfo: IgeneralInfo;
 	education: IEducation[];
+	experience: IExperience[];
 }

@@ -62,7 +62,35 @@ const updateEducation = async (
 	return updatedProfile;
 };
 
+interface IExperiencePayload {
+	experience: {
+		organizationName: string;
+		yearsOfExperience: number;
+		position: string;
+	}[];
+}
+
+const updateExperience = async (
+	payload: IExperiencePayload,
+	currentUser: JwtPayload
+) => {
+	const loginUser = currentUser.userId;
+
+	const updatedProfile = await profileModel.findOneAndUpdate(
+		{ userId: loginUser },
+		{ $set: { experience: payload.experience } },
+		{ new: true }
+	);
+
+	if (!updatedProfile) {
+		throw new ApiError(400, 'Failed to Update Experience');
+	}
+
+	return updatedProfile;
+};
+
 export const profileServices = {
 	generalInfoUpdate,
 	updateEducation,
+	updateExperience,
 };
