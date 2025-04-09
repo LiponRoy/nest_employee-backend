@@ -6,9 +6,12 @@ import { JobServices } from './job.service';
 
 const jobCreate = catchAsyncError(async (req: Request, res: Response) => {
 	const { ...jobInfo } = req.body;
-	const { companyId } = req.params;
+	// const { companyId } = req.params;
 
-	const jobData = await JobServices.jobCreate(jobInfo, companyId, req.user);
+	console.log("payload job controller  :", jobInfo)
+
+
+	const jobData = await JobServices.jobCreate(jobInfo);
 
 	sendResponse(res, {
 		statusCode: httpStatus.OK,

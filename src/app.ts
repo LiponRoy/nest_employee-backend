@@ -23,6 +23,7 @@ app.use(
 		credentials: true, // Allow cookies
 	})
 );
+
 app.use(express.urlencoded({ extended: true }));
 
 app.use('/api/v1/auth', AuthRoutes);

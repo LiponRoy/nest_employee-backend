@@ -11,8 +11,8 @@ import { UserRole } from '../../enums/user';
 const router = express.Router();
 
 router.post(
-	'/create/:companyId',
-	isAuthenticated(),
+	'/create',
+	// isAuthenticated(),
 	authorizeRoles(UserRole.EMPLOYER),
 	JobControllers.jobCreate
 );
