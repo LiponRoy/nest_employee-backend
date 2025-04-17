@@ -13,7 +13,7 @@ const router = express.Router();
 router.post(
 	'/create',
 	// isAuthenticated(),
-	authorizeRoles(UserRole.EMPLOYER),
+	// authorizeRoles(UserRole.EMPLOYER),
 	JobControllers.jobCreate
 );
 router.get('/all', JobControllers.allJob);

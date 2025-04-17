@@ -17,7 +17,7 @@ export interface IJob {
 	dateDeadline: string;
 	vacancy: number;
 	educationQualification: string;
-	gender: number;
+	gender: string;
 	company: Types.ObjectId;
 	created_by: Types.ObjectId;
 	applications: Types.ObjectId[];
