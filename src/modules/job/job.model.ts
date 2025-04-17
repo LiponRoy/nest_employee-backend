@@ -19,7 +19,7 @@ const jobSchema = new Schema<IJob>(
 		dateDeadline: { type: String, required: true },
 		vacancy: { type: Number, required: true },
 		educationQualification: { type: String, required: true },
-		gender: { type: Number, required: true },
+		gender: { type: String, required: true },
 		company: { type: Schema.Types.ObjectId, ref: 'Company', required: true },
 		created_by: { type: Schema.Types.ObjectId, ref: 'User', required: true },
 		applications: [{ type: Schema.Types.ObjectId, ref: 'Application' }],

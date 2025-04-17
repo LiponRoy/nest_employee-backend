@@ -6,11 +6,11 @@ import { JwtPayload } from 'jsonwebtoken';
 import mongoose from 'mongoose';
 
 const jobCreate = async (
-	payload: IJob,
-	companyId: string,
-	currentUser: JwtPayload
+	payload: IJob
+	// companyId: string,
+	// currentUser: JwtPayload
 ) => {
-	const { title } = payload;
+	const { title, company, created_by } = payload;
 
 	const session = await mongoose.startSession();
 
@@ -26,8 +26,8 @@ const jobCreate = async (
 		// create job
 		const newJob = new JobModel({
 			...payload,
-			company: companyId,
-			created_by: currentUser.userId,
+			company: company,
+			created_by: created_by,
 		});
 
 		await newJob.save({ session });
