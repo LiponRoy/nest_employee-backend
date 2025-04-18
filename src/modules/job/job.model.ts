@@ -5,16 +5,20 @@ const jobSchema = new Schema<IJob>(
 	{
 		title: { type: String, required: true },
 		description: { type: String, required: true },
-		requirements: { type: [String], required: true },
-		responsibility: { type: [String], required: true },
-		salaryAndBenefits: { type: [String], required: true },
-		skillAndExperience: { type: [String], required: true },
+
+		requirements: [{ title: String }],
+		responsibility: [{ title: String }],
+		salaryAndBenefits: [{ title: String }],
+		skillAndExperience: [{ title: String }],
+
 		minSalary: { type: Number, required: true },
 		maxSalary: { type: Number, required: true },
+
 		experienceLevel: { type: Number, required: true },
 		location: { type: String, required: true },
 		jobType: { type: String, required: true },
-		position: { type: Number, required: true },
+
+		// position: { type: Number, required: true },
 		datePosted: { type: String, required: true },
 		dateDeadline: { type: String, required: true },
 		vacancy: { type: Number, required: true },
