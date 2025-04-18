@@ -13,8 +13,8 @@ const router = express.Router();
 
 router.post(
 	'/create',
-	isAuthenticated(),
-	authorizeRoles(UserRole.EMPLOYER),
+	// isAuthenticated(),
+	// authorizeRoles(UserRole.EMPLOYER),
 	// validateRequest(CompanyValidation.companyValidationZodSchema),
 	CompanyControllers.companyCreate
 );

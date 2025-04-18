@@ -6,7 +6,7 @@ const companySchema = new Schema<ICompany>(
 		name: { type: String, required: true },
 		title: { type: String, required: true },
 		about: { type: String, required: true },
-		website: { type: String, required: true },
+		// website: { type: String, required: true },
 		location: { type: String, required: true },
 		teamMember: { type: Number, required: true },
 		officeBranches: { type: Number, required: true },

@@ -5,8 +5,8 @@ import { CompanyModel } from './company.model';
 import { JwtPayload } from 'jsonwebtoken';
 import mongoose from 'mongoose';
 
-const companyCreate = async (payload: ICompany, currentUser: JwtPayload) => {
-	const { name } = payload;
+const companyCreate = async (payload: ICompany) => {
+	const { name, creator } = payload;
 	const session = await mongoose.startSession();
 
 	try {
@@ -21,7 +21,7 @@ const companyCreate = async (payload: ICompany, currentUser: JwtPayload) => {
 		// Create the new product
 		const newCompany = new CompanyModel<ICompany>({
 			...payload,
-			creator: currentUser.userId,
+			creator: creator,
 		});
 
 		// Save the product and add it to the user's product list in a single atomic operation
