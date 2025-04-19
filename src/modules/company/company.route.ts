@@ -18,5 +18,12 @@ router.post(
 	// validateRequest(CompanyValidation.companyValidationZodSchema),
 	CompanyControllers.companyCreate
 );
+router.get(
+	'/getCompanyByCreator',
+	isAuthenticated(),
+	authorizeRoles(UserRole.EMPLOYER),
+	// validateRequest(CompanyValidation.companyValidationZodSchema),
+	CompanyControllers.getCompanyByCreator
+);
 
 export const CompanyRoutes = router;

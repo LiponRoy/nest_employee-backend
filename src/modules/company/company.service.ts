@@ -51,6 +51,17 @@ const companyCreate = async (payload: ICompany) => {
 	}
 };
 
+const getCompanyByCreator = async (currentUser: JwtPayload) => {
+	const loginUser = currentUser.userId;
+	const company = await CompanyModel.find({ creator: loginUser });
+
+	if (!company) {
+		throw new ApiError(409, 'company not found');
+	}
+	return company;
+};
+
 export const CompanyServices = {
 	companyCreate,
+	getCompanyByCreator,
 };
