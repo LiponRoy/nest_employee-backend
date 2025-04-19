@@ -7,8 +7,7 @@ import { JobServices } from './job.service';
 const jobCreate = catchAsyncError(async (req: Request, res: Response) => {
 	const { ...jobInfo } = req.body;
 	// const { companyId } = req.params;
-	console.log("payload job controller  :", jobInfo)
-
+	console.log('payload job controller  :', jobInfo);
 
 	const jobData = await JobServices.jobCreate(jobInfo);
 
@@ -30,7 +29,19 @@ const allJob = catchAsyncError(async (req: Request, res: Response) => {
 	});
 });
 
+const getJobByCreator = catchAsyncError(async (req: Request, res: Response) => {
+	const jobData = await JobServices.getJobByCreator(req.user);
+
+	sendResponse(res, {
+		statusCode: httpStatus.OK,
+		success: true,
+		message: 'job Getting Successfully',
+		data: jobData,
+	});
+});
+
 export const JobControllers = {
 	jobCreate,
 	allJob,
+	getJobByCreator,
 };

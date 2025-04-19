@@ -18,4 +18,11 @@ router.post(
 );
 router.get('/all', JobControllers.allJob);
 
+router.get(
+	'/getJobByCreator',
+	isAuthenticated(),
+	authorizeRoles(UserRole.EMPLOYER),
+	JobControllers.getJobByCreator
+);
+
 export const JobRoutes = router;

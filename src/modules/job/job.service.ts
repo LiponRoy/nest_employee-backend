@@ -6,14 +6,13 @@ import { JwtPayload } from 'jsonwebtoken';
 import mongoose from 'mongoose';
 
 const jobCreate = async (
-	payload: IJob,
+	payload: IJob
 	// companyId: string,
 	// currentUser: JwtPayload
 ) => {
-	const { title,created_by,company } = payload;
+	const { title, created_by, company } = payload;
 
-	console.log("payload job services  :", payload)
-
+	console.log('payload job services  :', payload);
 
 	const session = await mongoose.startSession();
 
@@ -69,7 +68,19 @@ const allJob = async () => {
 	return jobs;
 };
 
+const getJobByCreator = async (currentUser: JwtPayload) => {
+	console.log('job cus:', currentUser);
+	const loginUser = currentUser?.userId;
+	const Job = await JobModel.find({ created_by: loginUser });
+
+	if (!Job) {
+		throw new ApiError(409, 'Job not found');
+	}
+	return Job;
+};
+
 export const JobServices = {
 	jobCreate,
 	allJob,
+	getJobByCreator,
 };
