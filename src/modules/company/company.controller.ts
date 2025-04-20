@@ -30,8 +30,23 @@ const getCompanyByCreator = catchAsyncError(
 		});
 	}
 );
+const gettingCompnyNamesByCreator = catchAsyncError(
+	async (req: Request, res: Response) => {
+		const companyData = await CompanyServices.gettingCompnyNamesByCreator(
+			req.user
+		);
+
+		sendResponse(res, {
+			statusCode: httpStatus.OK,
+			success: true,
+			message: 'Compny Names Getting Successfully',
+			data: companyData,
+		});
+	}
+);
 
 export const CompanyControllers = {
 	companyCreate,
 	getCompanyByCreator,
+	gettingCompnyNamesByCreator,
 };

@@ -4,15 +4,10 @@ import { IJob } from './job.interface';
 import { JobModel } from './job.model';
 import { JwtPayload } from 'jsonwebtoken';
 import mongoose from 'mongoose';
+import { CompanyModel } from '../company/company.model';
 
-const jobCreate = async (
-	payload: IJob
-	// companyId: string,
-	// currentUser: JwtPayload
-) => {
-	const { title, created_by, company } = payload;
-
-	console.log('payload job services  :', payload);
+const jobCreate = async (payload: any) => {
+	const { title, created_by, companyName } = payload;
 
 	const session = await mongoose.startSession();
 
@@ -25,10 +20,19 @@ const jobCreate = async (
 			throw new ApiError(409, 'This job already exists');
 		}
 
+		// getting company _id by company name
+		const companyData = await CompanyModel.findOne({
+			name: companyName,
+		}).session(session);
+
+		if (!companyData) {
+			throw new ApiError(409, 'company Data not found');
+		}
+
 		// create job
 		const newJob = new JobModel({
 			...payload,
-			company: company,
+			companyId: companyData?._id.toString(),
 			created_by: created_by,
 		});
 
@@ -46,12 +50,9 @@ const jobCreate = async (
 			newJob,
 		};
 	} catch (error: any) {
-		// Rollback the transaction in case of an error
+		// Roleback the transaction in case of an error
 		await session.abortTransaction();
-		throw new ApiError(
-			400,
-			error.message || 'An error occurred while creating the job.'
-		);
+		throw new ApiError(400, error);
 	} finally {
 		// Ensure the session is always ended
 		session.endSession();

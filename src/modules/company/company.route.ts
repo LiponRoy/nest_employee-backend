@@ -26,4 +26,11 @@ router.get(
 	CompanyControllers.getCompanyByCreator
 );
 
+router.get(
+	'/compnyNames',
+	isAuthenticated(),
+	authorizeRoles(UserRole.EMPLOYER),
+	CompanyControllers.gettingCompnyNamesByCreator
+);
+
 export const CompanyRoutes = router;

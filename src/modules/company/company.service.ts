@@ -61,7 +61,22 @@ const getCompanyByCreator = async (currentUser: JwtPayload) => {
 	return company;
 };
 
+const gettingCompnyNamesByCreator = async (currentUser: JwtPayload) => {
+	const loginUser = currentUser.userId;
+	console.log('loginUser', loginUser);
+
+	const companyNames = await CompanyModel.distinct('name', {
+		creator: loginUser,
+	});
+
+	if (!companyNames) {
+		throw new ApiError(409, 'companyNames not found');
+	}
+	return companyNames;
+};
+
 export const CompanyServices = {
 	companyCreate,
 	getCompanyByCreator,
+	gettingCompnyNamesByCreator,
 };
