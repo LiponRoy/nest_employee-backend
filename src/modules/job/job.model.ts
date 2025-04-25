@@ -27,6 +27,12 @@ const jobSchema = new Schema<IJob>(
 		companyId: { type: Schema.Types.ObjectId, ref: 'Company', required: true },
 		created_by: { type: Schema.Types.ObjectId, ref: 'User', required: true },
 		applications: [{ type: Schema.Types.ObjectId, ref: 'Application' }],
+		logoImage: {
+			type: String,
+		},
+		cloudinary_id: {
+			type: String,
+		},
 	},
 	{
 		timestamps: true,

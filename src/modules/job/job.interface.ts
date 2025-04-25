@@ -21,4 +21,6 @@ export interface IJob {
 	companyId: Types.ObjectId;
 	created_by: Types.ObjectId;
 	applications: Types.ObjectId[];
+	logoImage: string;
+	cloudinary_id: string;
 }

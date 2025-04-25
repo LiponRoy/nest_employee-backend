@@ -7,6 +7,7 @@ import {
 } from '../../middlewares/authentication';
 import { JobControllers } from './job.controller';
 import { UserRole } from '../../enums/user';
+import upload from '../../middlewares/multerMiddleware';
 
 const router = express.Router();
 
@@ -14,6 +15,7 @@ router.post(
 	'/create',
 	// isAuthenticated(),
 	// authorizeRoles(UserRole.EMPLOYER),
+	upload.single('logoImage'),
 	JobControllers.jobCreate
 );
 router.get('/all', JobControllers.allJob);
