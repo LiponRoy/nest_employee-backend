@@ -13,6 +13,12 @@ const companySchema = new Schema<ICompany>(
 		FoundedDate: { type: String, required: true },
 		jobs: [{ type: Schema.Types.ObjectId, ref: 'Job' }],
 		creator: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+		logoImage: {
+			type: String,
+		},
+		cloudinary_id: {
+			type: String,
+		},
 	},
 	{
 		timestamps: true,

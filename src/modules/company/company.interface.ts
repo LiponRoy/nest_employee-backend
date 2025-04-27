@@ -11,4 +11,6 @@ export interface ICompany {
 	FoundedDate: string;
 	jobs: Types.ObjectId[];
 	creator: Types.ObjectId;
+	logoImage: string;
+	cloudinary_id: string;
 }

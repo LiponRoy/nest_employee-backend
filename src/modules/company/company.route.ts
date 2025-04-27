@@ -8,6 +8,7 @@ import {
 } from '../../middlewares/authentication';
 import { CompanyControllers } from './company.controller';
 import { UserRole } from '../../enums/user';
+import upload from '../../middlewares/multerMiddleware';
 
 const router = express.Router();
 
@@ -16,6 +17,7 @@ router.post(
 	// isAuthenticated(),
 	// authorizeRoles(UserRole.EMPLOYER),
 	// validateRequest(CompanyValidation.companyValidationZodSchema),
+	upload.single('logoImage'),
 	CompanyControllers.companyCreate
 );
 router.get(

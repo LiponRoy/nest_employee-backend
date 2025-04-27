@@ -4,9 +4,15 @@ import { ICompany } from './company.interface';
 import { CompanyModel } from './company.model';
 import { JwtPayload } from 'jsonwebtoken';
 import mongoose from 'mongoose';
+import cloudinary from '../../utils/cloudinary';
 
-const companyCreate = async (payload: ICompany) => {
+const companyCreate = async (payload: ICompany, photoFile: any) => {
 	const { name, creator } = payload;
+
+	console.log('pp creator', creator);
+	console.log('pp payload', payload);
+	console.log('pp photoFile', photoFile);
+
 	const session = await mongoose.startSession();
 
 	try {
@@ -18,10 +24,29 @@ const companyCreate = async (payload: ICompany) => {
 			throw new ApiError(409, 'company already exists');
 		}
 
+		// Prepare for Cloudinary upload
+		let result: any = null;
+		if (photoFile) {
+			try {
+				// Upload image to Cloudinary
+				result = await cloudinary.uploader.upload(photoFile.path, {
+					folder: 'nest-emp-company-img',
+					transformation: [
+						{ width: 800, height: 800, crop: 'limit' }, // Resize image
+						{ quality: 'auto', fetch_format: 'auto' }, // Optimize quality and format
+					],
+				});
+			} catch (cloudinaryError) {
+				throw new ApiError(500, 'Failed to upload image to Cloudinary');
+			}
+		}
+
 		// Create the new product
 		const newCompany = new CompanyModel<ICompany>({
 			...payload,
 			creator: creator,
+			logoImage: result?.secure_url,
+			cloudinary_id: result?.public_id,
 		});
 
 		// Save the product and add it to the user's product list in a single atomic operation
@@ -41,6 +66,8 @@ const companyCreate = async (payload: ICompany) => {
 	} catch (error: any) {
 		// Rollback the transaction in case of an error
 		await session.abortTransaction();
+		4;
+		console.log(error);
 		throw new ApiError(
 			400,
 			error.message || 'An error occurred while creating the company.'

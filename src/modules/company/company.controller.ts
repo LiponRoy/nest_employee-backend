@@ -8,7 +8,10 @@ import { Request, Response } from 'express';
 const companyCreate = catchAsyncError(async (req: Request, res: Response) => {
 	const { ...companyInfo } = req.body;
 
-	const companyData = await CompanyServices.companyCreate(companyInfo);
+	const companyData = await CompanyServices.companyCreate(
+		companyInfo,
+		req.file
+	);
 
 	sendResponse(res, {
 		statusCode: httpStatus.OK,
