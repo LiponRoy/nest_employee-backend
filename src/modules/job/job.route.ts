@@ -27,4 +27,6 @@ router.get(
 	JobControllers.getJobByCreator
 );
 
+router.get('/:id', JobControllers.getJobById);
+
 export const JobRoutes = router;

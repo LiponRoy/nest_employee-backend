@@ -38,8 +38,20 @@ const getJobByCreator = catchAsyncError(async (req: Request, res: Response) => {
 	});
 });
 
+const getJobById = catchAsyncError(async (req: Request, res: Response) => {
+	const jobData = await JobServices.getJobById(req.params.id);
+
+	sendResponse(res, {
+		statusCode: httpStatus.OK,
+		success: true,
+		message: 'job Getting Successfully',
+		data: jobData,
+	});
+});
+
 export const JobControllers = {
 	jobCreate,
 	allJob,
 	getJobByCreator,
+	getJobById,
 };

@@ -100,8 +100,18 @@ const getJobByCreator = async (currentUser: JwtPayload) => {
 	return Job;
 };
 
+const getJobById = async (id: string) => {
+	const Job = await JobModel.findById(id);
+
+	if (!Job) {
+		throw new ApiError(409, 'Job not found');
+	}
+	return Job;
+};
+
 export const JobServices = {
 	jobCreate,
 	allJob,
 	getJobByCreator,
+	getJobById,
 };
