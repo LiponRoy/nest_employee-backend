@@ -9,6 +9,12 @@ import { UserRole } from '../../enums/user';
 
 const router = express.Router();
 
+router.get(
+	'/appliedJobsAll',
+	isAuthenticated(),
+	applicationControllers.gettingAppliedJobsForUser
+);
+
 router.post(
 	'/create/:jobId',
 	isAuthenticated(),

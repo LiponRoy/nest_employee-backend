@@ -24,6 +24,23 @@ const applicationCreate = catchAsyncError(
 	}
 );
 
+const gettingAppliedJobsForUser = catchAsyncError(
+	async (req: Request, res: Response) => {
+		console.log('ggg', req.user);
+		const applicationData = await ApplicationServices.gettingAppliedJobsForUser(
+			req.user
+		);
+
+		sendResponse(res, {
+			statusCode: httpStatus.OK,
+			success: true,
+			message: 'jobs getting Successfully',
+			data: applicationData,
+		});
+	}
+);
+
 export const applicationControllers = {
 	applicationCreate,
+	gettingAppliedJobsForUser,
 };

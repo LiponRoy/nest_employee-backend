@@ -66,6 +66,18 @@ const applicationCreate = async (
 	}
 };
 
+const gettingAppliedJobsForUser = async (currentUser: JwtPayload) => {
+	const application = await ApplicationModel.find({
+		applicant: currentUser?.userId,
+	});
+
+	if (!application || application.length === 0) {
+		throw new ApiError(400, 'You do not have any applied jobs');
+	}
+	return application;
+};
+
 export const ApplicationServices = {
 	applicationCreate,
+	gettingAppliedJobsForUser,
 };
