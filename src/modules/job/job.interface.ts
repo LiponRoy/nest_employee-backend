@@ -12,6 +12,7 @@ export interface IJob {
 	experienceLevel: number;
 	location: string;
 	jobType: string;
+	category: string;
 	// position: number;
 	datePosted: string;
 	dateDeadline: string;

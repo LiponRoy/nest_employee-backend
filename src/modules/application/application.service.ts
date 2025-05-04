@@ -69,7 +69,15 @@ const applicationCreate = async (
 const gettingAppliedJobsForUser = async (currentUser: JwtPayload) => {
 	const application = await ApplicationModel.find({
 		applicant: currentUser?.userId,
-	});
+	})
+		.populate({
+			path: 'job',
+			select: 'title description', // add multiple fields separated by space
+		})
+		.populate({
+			path: 'status',
+			// select: 'title description', // add multiple fields separated by space
+		});
 
 	if (!application || application.length === 0) {
 		throw new ApiError(400, 'You do not have any applied jobs');
