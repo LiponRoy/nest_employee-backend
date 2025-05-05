@@ -7,7 +7,7 @@ import mongoose from 'mongoose';
 import { CompanyModel } from '../company/company.model';
 import cloudinary from '../../utils/cloudinary';
 
-const jobCreate = async (payload: any, photoFile: any) => {
+const jobCreate = async (payload: any) => {
 	const { title, created_by, companyName } = payload;
 
 	const session = await mongoose.startSession();
@@ -30,30 +30,11 @@ const jobCreate = async (payload: any, photoFile: any) => {
 			throw new ApiError(409, 'company Data not found');
 		}
 
-		// Prepare for Cloudinary upload
-		let result: any = null;
-		if (photoFile) {
-			try {
-				// Upload image to Cloudinary
-				result = await cloudinary.uploader.upload(photoFile.path, {
-					folder: 'nest-emp-img',
-					transformation: [
-						{ width: 800, height: 800, crop: 'limit' }, // Resize image
-						{ quality: 'auto', fetch_format: 'auto' }, // Optimize quality and format
-					],
-				});
-			} catch (cloudinaryError) {
-				throw new ApiError(500, 'Failed to upload image to Cloudinary');
-			}
-		}
-
 		// create job
 		const newJob = new JobModel({
 			...payload,
 			companyId: companyData?._id.toString(),
 			created_by: created_by,
-			logoImage: result?.secure_url,
-			cloudinary_id: result?.public_id,
 		});
 
 		await newJob.save({ session });
@@ -80,7 +61,8 @@ const jobCreate = async (payload: any, photoFile: any) => {
 };
 
 const allJob = async () => {
-	const jobs = await JobModel.find();
+	const jobs = await JobModel.find().populate('companyId')
+	.lean();
 
 	if (!jobs) {
 		throw new ApiError(409, 'jobs not found .');
@@ -101,13 +83,19 @@ const getJobByCreator = async (currentUser: JwtPayload) => {
 };
 
 const getJobById = async (id: string) => {
-	const Job = await JobModel.findById(id);
+	const job = await JobModel.findById(id)
+		.populate('companyId')
+		.lean();
 
-	if (!Job) {
+	if (!job) {
 		throw new ApiError(409, 'Job not found');
 	}
-	return Job;
+
+
+	return job;
 };
+
+
 
 export const JobServices = {
 	jobCreate,

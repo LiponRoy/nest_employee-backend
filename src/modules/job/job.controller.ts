@@ -7,7 +7,7 @@ import { JobServices } from './job.service';
 const jobCreate = catchAsyncError(async (req: Request, res: Response) => {
 	const { ...jobInfo } = req.body;
 
-	const jobData = await JobServices.jobCreate(jobInfo, req.file);
+	const jobData = await JobServices.jobCreate(jobInfo);
 
 	sendResponse(res, {
 		statusCode: httpStatus.OK,
