@@ -4,7 +4,11 @@ import { catchAsyncError } from '../../utils/catchAsyncErrors';
 import { Request, Response } from 'express';
 import { JobServices } from './job.service';
 import queryFilter from '../../utils/queryFilter';
-import { filterableFields, searchableFields } from './job.constant';
+import {
+	filterableFields,
+	paginationsFields,
+	searchableFields,
+} from './job.constant';
 
 const jobCreate = catchAsyncError(async (req: Request, res: Response) => {
 	const { ...jobInfo } = req.body;
@@ -19,9 +23,9 @@ const jobCreate = catchAsyncError(async (req: Request, res: Response) => {
 	});
 });
 const allJob = catchAsyncError(async (req: Request, res: Response) => {
-
+	const paginationOptions = queryFilter(req.query, paginationsFields);
 	const filters = queryFilter(req.query, filterableFields);
-	const result = await JobServices.allJob(filters);
+	const result = await JobServices.allJob(filters, paginationOptions);
 
 	sendResponse<any[]>(res, {
 		statusCode: httpStatus.OK,

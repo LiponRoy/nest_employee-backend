@@ -25,3 +25,10 @@ export interface IJob {
 	logoImage: string;
 	cloudinary_id: string;
 }
+
+export interface IPagination {
+	page?: number;
+	limit?: number;
+	shortBy?: string;
+	shortOrder?: string;
+}
