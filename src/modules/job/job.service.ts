@@ -63,9 +63,10 @@ const jobCreate = async (payload: any) => {
 };
 
 const allJob = async (filters: any, paginationFields: IPagination) => {
-	const { searchTerm } = filters;
+	const { searchTerm, ...filtersData } = filters;
 
 	const andConditions = [];
+
 	// for searching based on category
 	if (typeof searchTerm === 'string') {
 		andConditions.push({
@@ -78,10 +79,19 @@ const allJob = async (filters: any, paginationFields: IPagination) => {
 		});
 	}
 
-	// pagination
+	// for filtering
+	if (Object.keys(filtersData).length) {
+		andConditions.push({
+			$and: Object.entries(filtersData).map(([field, value]) => ({
+				[field]: value,
+			})),
+		});
+	}
+
+	// for pagination
 	const { page, limit, skip, sortBy, sortOrder } =
 		paginetionHelpers.calculatePaginetion(paginationFields);
-	// End pagination
+	// End for pagination
 
 	// for sorting
 	const sortConditions: Record<string, SortOrder> = {};
@@ -89,7 +99,7 @@ const allJob = async (filters: any, paginationFields: IPagination) => {
 	if (sortBy && sortOrder) {
 		sortConditions[sortBy] = sortOrder;
 	}
-	// End sorting
+	// End for sorting
 
 	const whereConditions =
 		andConditions.length > 0 ? { $and: andConditions } : {};

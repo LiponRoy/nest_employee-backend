@@ -24,7 +24,9 @@ const jobCreate = catchAsyncError(async (req: Request, res: Response) => {
 });
 const allJob = catchAsyncError(async (req: Request, res: Response) => {
 	const paginationOptions = queryFilter(req.query, paginationsFields);
+
 	const filters = queryFilter(req.query, filterableFields);
+
 	const result = await JobServices.allJob(filters, paginationOptions);
 
 	sendResponse<any[]>(res, {
