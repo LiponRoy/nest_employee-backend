@@ -68,7 +68,16 @@ const allJob = async () => {
 		throw new ApiError(409, 'jobs not found .');
 	}
 
-	return jobs;
+	const total = await JobModel.countDocuments(jobs);
+
+	// return jobs;
+	return {
+		meta: {
+
+		  total,
+		},
+		data: jobs,
+	  };
 };
 
 const getJobByCreator = async (currentUser: JwtPayload) => {

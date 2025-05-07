@@ -17,13 +17,14 @@ const jobCreate = catchAsyncError(async (req: Request, res: Response) => {
 	});
 });
 const allJob = catchAsyncError(async (req: Request, res: Response) => {
-	const jobData = await JobServices.allJob();
+	const result = await JobServices.allJob();
 
-	sendResponse(res, {
+	sendResponse<any[]>(res, {
 		statusCode: httpStatus.OK,
 		success: true,
-		message: 'jobs Getting Successfully',
-		data: jobData,
+		message: 'Jobs get Successfully !',
+		meta: result.meta,
+		data: result.data,
 	});
 });
 
