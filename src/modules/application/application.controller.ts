@@ -1,46 +1,66 @@
-import httpStatus from 'http-status';
-import sendResponse from '../../utils/sendResponse';
-import { catchAsyncError } from '../../utils/catchAsyncErrors';
-import { Request, Response } from 'express';
-import { ApplicationServices } from './application.service';
+import httpStatus from "http-status";
+import sendResponse from "../../utils/sendResponse";
+import { catchAsyncError } from "../../utils/catchAsyncErrors";
+import { Request, Response } from "express";
+import { ApplicationServices } from "./application.service";
 
 const applicationCreate = catchAsyncError(
-	async (req: Request, res: Response) => {
-		const { ...applicationInfo } = req.body;
-		const { jobId } = req.params;
+  async (req: Request, res: Response) => {
+    const { ...applicationInfo } = req.body;
+    const { jobId } = req.params;
 
-		const applicationData = await ApplicationServices.applicationCreate(
-			applicationInfo,
-			jobId,
-			req.user
-		);
+    const applicationData = await ApplicationServices.applicationCreate(
+      applicationInfo,
+      jobId,
+      req.user
+    );
 
-		sendResponse(res, {
-			statusCode: httpStatus.OK,
-			success: true,
-			message: 'application Create Successfully',
-			data: applicationData,
-		});
-	}
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "application Create Successfully",
+      data: applicationData,
+    });
+  }
+);
+
+const rejectApplication = catchAsyncError(
+  async (req: Request, res: Response) => {
+    const { jobSeeker_id } = req.body;
+    const { jobId } = req.params;
+
+    const applicationData = await ApplicationServices.rejectApplication(
+      jobId,
+      jobSeeker_id
+    );
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "application Rejected Successfully",
+      data: applicationData,
+    });
+  }
 );
 
 const gettingAppliedJobsForUser = catchAsyncError(
-	async (req: Request, res: Response) => {
-		console.log('ggg', req.user);
-		const applicationData = await ApplicationServices.gettingAppliedJobsForUser(
-			req.user
-		);
+  async (req: Request, res: Response) => {
+    console.log("ggg", req.user);
+    const applicationData = await ApplicationServices.gettingAppliedJobsForUser(
+      req.user
+    );
 
-		sendResponse(res, {
-			statusCode: httpStatus.OK,
-			success: true,
-			message: 'jobs getting Successfully',
-			data: applicationData,
-		});
-	}
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "jobs getting Successfully",
+      data: applicationData,
+    });
+  }
 );
 
 export const applicationControllers = {
-	applicationCreate,
-	gettingAppliedJobsForUser,
+  applicationCreate,
+  gettingAppliedJobsForUser,
+  rejectApplication,
 };
