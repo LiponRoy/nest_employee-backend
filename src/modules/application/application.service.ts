@@ -5,12 +5,15 @@ import { ApplicationModel } from './application.model';
 import { JwtPayload } from 'jsonwebtoken';
 import mongoose from 'mongoose';
 import { JobModel } from '../job/job.model';
+import { UserModel } from '../auth/auth.model';
 
 const applicationCreate = async (
 	payload: IApplication,
 	jobId: string,
 	currentUser: JwtPayload
 ) => {
+
+	console.log("service applic ",jobId );
 	const session = await mongoose.startSession();
 	try {
 		session.startTransaction();
@@ -38,6 +41,7 @@ const applicationCreate = async (
 			);
 		}
 
+
 		// Update the JobModel's applications
 		const JobModelUpdate = await JobModel.findByIdAndUpdate(
 			jobId,
@@ -45,8 +49,26 @@ const applicationCreate = async (
 			{ session }
 		);
 
+		// Update the Auth --> myAppliedJobs
+		const AuthModelUpdate = await UserModel.findByIdAndUpdate(
+			currentUser.userId,
+			{ $push: { myAppliedJobs: jobId } },
+			{ session }
+		);
+
+
 		if (!JobModelUpdate) {
 			throw new ApiError(500, 'Failed to update Job.');
+		}
+
+		
+
+		if (!JobModelUpdate) {
+			throw new ApiError(500, 'Failed to update Job.');
+		}
+
+		if (!AuthModelUpdate) {
+			throw new ApiError(500, 'Failed to update Auth --> myAppliedJobs.');
 		}
 
 		// Commit the transaction

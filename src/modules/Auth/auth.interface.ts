@@ -1,4 +1,4 @@
-import { Document, Model } from 'mongoose';
+import { Document, Model, Types } from 'mongoose';
 import { UserRole } from '../../enums/user';
 
 export interface IUser extends Document {
@@ -6,6 +6,7 @@ export interface IUser extends Document {
 	email: string;
 	password: string;
 	role: UserRole.JOB_SEEKER | UserRole.EMPLOYER | UserRole.ADMIN;
+	myAppliedJobs:Types.ObjectId[];
 }
 
 export interface ILoginUser {

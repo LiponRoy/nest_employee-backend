@@ -12,7 +12,7 @@ export const isAuthenticated = () => {
 			const token = req.cookies.authToken; // Get token from the cookie
 
 			if (!token) {
-				return res.status(401).json({ message: 'No token provided' });
+				return res.status(401).json({ message: 'You are not login' });
 			}
 
 			try {

@@ -26,6 +26,7 @@ const userSchema = new Schema<IUser>(
 			enum: [UserRole.JOB_SEEKER, UserRole.EMPLOYER, UserRole.ADMIN],
 			default: UserRole.JOB_SEEKER,
 		},
+		myAppliedJobs: [{ type: Schema.Types.ObjectId, ref: 'Job' }],
 	},
 	{
 		timestamps: true,
