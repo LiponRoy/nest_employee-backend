@@ -8,162 +8,184 @@ import { JobModel } from "../job/job.model";
 import { UserModel } from "../auth/auth.model";
 
 const applicationCreate = async (
-  payload: IApplication,
-  jobId: string,
-  currentUser: JwtPayload
+    payload: IApplication,
+    jobId: string,
+    currentUser: JwtPayload
 ) => {
-  console.log("service applic ", jobId);
-  const session = await mongoose.startSession();
-  try {
-    session.startTransaction();
+    console.log("service applic ", jobId);
+    const session = await mongoose.startSession();
+    try {
+        session.startTransaction();
 
-    const allreadyApply = await ApplicationModel.findOne({
-      job: jobId,
-      applicant: currentUser.userId,
-    }).session(session);
+        const allreadyApply = await ApplicationModel.findOne({
+            job: jobId,
+            applicant: currentUser.userId,
+        }).session(session);
 
-    if (allreadyApply) {
-      throw new ApiError(400, "You have already applied for this job");
+        if (allreadyApply) {
+            throw new ApiError(400, "You have already applied for this job");
+        }
+
+        // create application
+        const newApplication = await new ApplicationModel({
+            job: jobId,
+            applicant: currentUser.userId,
+        }).save({ session });
+
+        // If failed to create an application
+        if (!newApplication) {
+            throw new ApiError(
+                httpStatus.BAD_REQUEST,
+                "Failed to create application"
+            );
+        }
+
+        // Update the JobModel's applications
+        const JobModelUpdate = await JobModel.findByIdAndUpdate(
+            jobId,
+            { $push: { applications: newApplication._id } },
+            { session }
+        );
+
+        // Update the Auth --> myAppliedJobs
+        const AuthModelUpdate = await UserModel.findByIdAndUpdate(
+            currentUser.userId,
+            { $push: { myAppliedJobs: jobId } },
+            { session }
+        );
+
+        if (!JobModelUpdate) {
+            throw new ApiError(500, "Failed to update Job.");
+        }
+
+        if (!JobModelUpdate) {
+            throw new ApiError(500, "Failed to update Job.");
+        }
+
+        if (!AuthModelUpdate) {
+            throw new ApiError(500, "Failed to update Auth --> myAppliedJobs.");
+        }
+
+        // Commit the transaction
+        await session.commitTransaction();
+
+        return {
+            newApplication,
+        };
+    } catch (error: any) {
+        await session.abortTransaction();
+        throw new ApiError(
+            400,
+            error.message || "An error occurred while apply for job"
+        );
+    } finally {
+        session.endSession();
     }
-
-    // create application
-    const newApplication = await new ApplicationModel({
-      job: jobId,
-      applicant: currentUser.userId,
-    }).save({ session });
-
-    // If failed to create an application
-    if (!newApplication) {
-      throw new ApiError(
-        httpStatus.BAD_REQUEST,
-        "Failed to create application"
-      );
-    }
-
-    // Update the JobModel's applications
-    const JobModelUpdate = await JobModel.findByIdAndUpdate(
-      jobId,
-      { $push: { applications: newApplication._id } },
-      { session }
-    );
-
-    // Update the Auth --> myAppliedJobs
-    const AuthModelUpdate = await UserModel.findByIdAndUpdate(
-      currentUser.userId,
-      { $push: { myAppliedJobs: jobId } },
-      { session }
-    );
-
-    if (!JobModelUpdate) {
-      throw new ApiError(500, "Failed to update Job.");
-    }
-
-    if (!JobModelUpdate) {
-      throw new ApiError(500, "Failed to update Job.");
-    }
-
-    if (!AuthModelUpdate) {
-      throw new ApiError(500, "Failed to update Auth --> myAppliedJobs.");
-    }
-
-    // Commit the transaction
-    await session.commitTransaction();
-
-    return {
-      newApplication,
-    };
-  } catch (error: any) {
-    await session.abortTransaction();
-    throw new ApiError(
-      400,
-      error.message || "An error occurred while apply for job"
-    );
-  } finally {
-    session.endSession();
-  }
 };
 
 const rejectApplication = async (
-  //   payload: IApplication,
-  jobId: string,
-  jobSeeker_id: any
+    //   payload: IApplication,
+    jobId: string,
+    jobSeeker_id: any
 ) => {
-  const session = await mongoose.startSession();
-  try {
-    session.startTransaction();
+    const session = await mongoose.startSession();
+    try {
+        session.startTransaction();
 
-    const application = await ApplicationModel.findOne({
-      job: jobId,
-      applicant: jobSeeker_id,
-    }).session(session);
+        const application = await ApplicationModel.findOne({
+            job: jobId,
+            applicant: jobSeeker_id,
+        }).session(session);
 
-    if (!application) {
-      throw new ApiError(400, "Application is not found");
+        if (!application) {
+            throw new ApiError(400, "Application is not found");
+        }
+
+        // Remove the application ID from the JobModel's applications array
+        const JobModelUpdate = await JobModel.findByIdAndUpdate(
+            jobId,
+            { $pull: { applications: application._id } },
+            { session }
+        );
+
+        if (!JobModelUpdate) {
+            throw new ApiError(500, "Failed to update Job.");
+        }
+
+        // Remove the Auth --> myAppliedJobs
+        const AuthModelUpdate = await UserModel.findByIdAndUpdate(
+            jobSeeker_id,
+            { $pull: { myAppliedJobs: jobId } },
+            { session }
+        );
+
+        if (!AuthModelUpdate) {
+            throw new ApiError(500, "Failed to update Auth --> myAppliedJobs.");
+        }
+
+        // now remove application data from database
+        await ApplicationModel.findByIdAndDelete(application._id, { session });
+
+        // Commit the transaction
+        await session.commitTransaction();
+
+        return {
+            application,
+        };
+    } catch (error: any) {
+        await session.abortTransaction();
+        throw new ApiError(
+            400,
+            error.message || "An error occurred while apply for job"
+        );
+    } finally {
+        session.endSession();
     }
-
-    // Remove the application ID from the JobModel's applications array
-    const JobModelUpdate = await JobModel.findByIdAndUpdate(
-      jobId,
-      { $pull: { applications: application._id } },
-      { session }
-    );
-
-    if (!JobModelUpdate) {
-      throw new ApiError(500, "Failed to update Job.");
-    }
-
-    // Remove the Auth --> myAppliedJobs
-    const AuthModelUpdate = await UserModel.findByIdAndUpdate(
-      jobSeeker_id,
-      { $pull: { myAppliedJobs: jobId } },
-      { session }
-    );
-
-    if (!AuthModelUpdate) {
-      throw new ApiError(500, "Failed to update Auth --> myAppliedJobs.");
-    }
-
-    // now remove application data from database
-    await ApplicationModel.findByIdAndDelete(application._id, { session });
-
-    // Commit the transaction
-    await session.commitTransaction();
-
-    return {
-      application,
-    };
-  } catch (error: any) {
-    await session.abortTransaction();
-    throw new ApiError(
-      400,
-      error.message || "An error occurred while apply for job"
-    );
-  } finally {
-    session.endSession();
-  }
 };
 
 const gettingAppliedJobsForUser = async (currentUser: JwtPayload) => {
-  const application = await ApplicationModel.find({
-    applicant: currentUser?.userId,
-  })
-    .populate({
-      path: "job",
-      select: "title description", // add multiple fields separated by space
+    const application = await ApplicationModel.find({
+        applicant: currentUser?.userId,
     })
-    .populate({
-      path: "status",
-      // select: 'title description', // add multiple fields separated by space
+        .populate({
+            path: "job",
+            select: "title description", // add multiple fields separated by space
+        })
+        .populate({
+            path: "status",
+            // select: 'title description', // add multiple fields separated by space
+        });
+
+    if (!application || application.length === 0) {
+        throw new ApiError(400, "You do not have any applied jobs");
+    }
+    return application;
+};
+
+const getApplicantsByJobId = async (jobId: any) => {
+	
+    //Find the job (optional, if job exits or not)
+    const job = await JobModel.findById(jobId);
+    if (!job) {
+        throw new ApiError(400, "Jobs Not Found");
+    }
+
+    //Find applications for that job and populate applicant data
+    const applicants = await ApplicationModel.find({ job: jobId }).populate({
+        path: "applicant",
+        select: "name",
     });
 
-  if (!application || application.length === 0) {
-    throw new ApiError(400, "You do not have any applied jobs");
-  }
-  return application;
+    if (!applicants) {
+        throw new ApiError(400, "No applicants found");
+    }
+
+    return applicants;
 };
 
 export const ApplicationServices = {
-  applicationCreate,
-  gettingAppliedJobsForUser,
-  rejectApplication,
+    applicationCreate,
+    gettingAppliedJobsForUser,
+    rejectApplication,
+    getApplicantsByJobId,
 };

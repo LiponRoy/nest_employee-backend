@@ -59,8 +59,25 @@ const gettingAppliedJobsForUser = catchAsyncError(
   }
 );
 
+const getApplicantsByJobId = catchAsyncError(
+  async (req: Request, res: Response) => {
+     const { jobId } = req.params;
+    const applicants = await ApplicationServices.getApplicantsByJobId(
+      jobId
+    );
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "applicants getting Successfully",
+      data: applicants,
+    });
+  }
+);
+
 export const applicationControllers = {
   applicationCreate,
   gettingAppliedJobsForUser,
   rejectApplication,
+  getApplicantsByJobId,
 };

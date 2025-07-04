@@ -22,4 +22,11 @@ router.post(
 	applicationControllers.applicationCreate
 );
 
+router.get(
+	'/getApplicantsByJobId/:jobId',
+	// isAuthenticated(),
+	// authorizeRoles(UserRole.JOB_SEEKER),
+	applicationControllers.getApplicantsByJobId
+);
+
 export const ApplicationRoutes = router;
