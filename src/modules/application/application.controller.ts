@@ -26,12 +26,12 @@ const applicationCreate = catchAsyncError(
 
 const rejectApplication = catchAsyncError(
   async (req: Request, res: Response) => {
-    const { jobSeeker_id } = req.body;
-    const { jobId } = req.params;
+    const { jobSeeker_id,jobId } = req.params;
+    // const { jobId } = req.body;
 
     const applicationData = await ApplicationServices.rejectApplication(
-      jobId,
-      jobSeeker_id
+      jobSeeker_id,
+            jobId,
     );
 
     sendResponse(res, {

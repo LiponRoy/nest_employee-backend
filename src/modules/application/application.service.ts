@@ -5,7 +5,7 @@ import { ApplicationModel } from "./application.model";
 import { JwtPayload } from "jsonwebtoken";
 import mongoose, { Types } from "mongoose";
 import { JobModel } from "../job/job.model";
-import { UserModel } from "../auth/auth.model";
+import { UserModel } from "./../auth/auth.model";
 
 const applicationCreate = async (
     payload: IApplication,
@@ -84,21 +84,37 @@ const applicationCreate = async (
 };
 
 const rejectApplication = async (
-    //   payload: IApplication,
+    jobSeeker_id: any,
     jobId: string,
-    jobSeeker_id: any
+
 ) => {
+    if (!Types.ObjectId.isValid(jobSeeker_id)) {
+        throw new ApiError(400, "Invalid Job ID");
+    }
+
+    if (!Types.ObjectId.isValid(jobId)) {
+        throw new ApiError(400, "Invalid Job ID");
+    }
+
     const session = await mongoose.startSession();
     try {
         session.startTransaction();
 
-        const application = await ApplicationModel.findOne({
-            job: jobId,
-            applicant: jobSeeker_id,
-        }).session(session);
+        // 1.Find the jobSeeker  if jobSeeker exits or not)
+        const jobSeeker = await UserModel.findById(jobSeeker_id).session(
+            session
+        );
+        if (!jobSeeker) {
+            throw new ApiError(400, "JobSeeker Not Found");
+        }
 
+        // 2.get application by jobSeeker id  and jobId
+        const application = await ApplicationModel.findOne({
+            applicant: jobSeeker_id,
+            job: jobId,
+        });
         if (!application) {
-            throw new ApiError(400, "Application is not found");
+            throw new Error("Application not found");
         }
 
         // Remove the application ID from the JobModel's applications array
@@ -109,8 +125,12 @@ const rejectApplication = async (
         );
 
         if (!JobModelUpdate) {
-            throw new ApiError(500, "Failed to update Job.");
+            throw new ApiError(500, "Failed to update Job model applications.");
         }
+        
+        // delete this application after removie application id from jobModel
+        await ApplicationModel.findByIdAndDelete(application._id).session(session);
+
 
         // Remove the Auth --> myAppliedJobs
         const AuthModelUpdate = await UserModel.findByIdAndUpdate(
@@ -122,9 +142,6 @@ const rejectApplication = async (
         if (!AuthModelUpdate) {
             throw new ApiError(500, "Failed to update Auth --> myAppliedJobs.");
         }
-
-        // now remove application data from database
-        await ApplicationModel.findByIdAndDelete(application._id, { session });
 
         // Commit the transaction
         await session.commitTransaction();

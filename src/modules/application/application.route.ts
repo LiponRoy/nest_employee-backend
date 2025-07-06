@@ -29,4 +29,16 @@ router.get(
 	applicationControllers.getApplicantsByJobId
 );
 
+router.patch(
+	'/reject/:jobSeeker_id/:jobId',
+	// isAuthenticated(),
+	// authorizeRoles(UserRole.JOB_SEEKER),
+	applicationControllers.rejectApplication
+);
+
+// router.delete(
+//   '/jobseeker/:jobSeekerId/job/:jobId',
+//   deleteApplicationByJobAndSeeker
+// );
+
 export const ApplicationRoutes = router;
