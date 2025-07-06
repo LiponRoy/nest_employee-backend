@@ -3,7 +3,7 @@ import ApiError from "../../errors/ApiError";
 import { IApplication } from "./application.interface";
 import { ApplicationModel } from "./application.model";
 import { JwtPayload } from "jsonwebtoken";
-import mongoose from "mongoose";
+import mongoose, { Types } from "mongoose";
 import { JobModel } from "../job/job.model";
 import { UserModel } from "../auth/auth.model";
 
@@ -162,8 +162,11 @@ const gettingAppliedJobsForUser = async (currentUser: JwtPayload) => {
     return application;
 };
 
-const getApplicantsByJobId = async (jobId: any) => {
-	
+const getApplicantsByJobId = async (jobId: string | Types.ObjectId) => {
+    if (!Types.ObjectId.isValid(jobId)) {
+        throw new ApiError(400, "Invalid Job ID");
+    }
+
     //Find the job (optional, if job exits or not)
     const job = await JobModel.findById(jobId);
     if (!job) {
@@ -171,16 +174,21 @@ const getApplicantsByJobId = async (jobId: any) => {
     }
 
     //Find applications for that job and populate applicant data
-    const applicants = await ApplicationModel.find({ job: jobId }).populate({
-        path: "applicant",
-        select: "name",
-    });
+    const applicants = await ApplicationModel.find({ job: jobId })
+        .populate({
+            path: "applicant",
+            select: "name",
+        })
+        .lean();
 
-    if (!applicants) {
-        throw new ApiError(400, "No applicants found");
+    if (!applicants || applicants.length === 0) {
+        throw new ApiError(404, "No applicants found for this job");
     }
 
-    return applicants;
+    // return data;
+    return {
+        data: applicants,
+    };
 };
 
 export const ApplicationServices = {

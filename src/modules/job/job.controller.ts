@@ -60,9 +60,24 @@ const getJobById = catchAsyncError(async (req: Request, res: Response) => {
 	});
 });
 
+const deleteJobById = catchAsyncError(async (req: Request, res: Response) => {
+	const { jobId } = req.params;
+	const jobData = await JobServices.deleteJobById(jobId);
+
+	sendResponse(res, {
+		statusCode: httpStatus.OK,
+		success: true,
+		message: 'delete Job Successfully',
+		data: jobData,
+	});
+});
+
+
+
 export const JobControllers = {
 	jobCreate,
 	allJob,
 	getJobByCreator,
 	getJobById,
+	deleteJobById
 };
