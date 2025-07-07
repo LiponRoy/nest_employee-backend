@@ -36,6 +36,13 @@ router.patch(
 	applicationControllers.rejectApplication
 );
 
+router.get(
+	'/is-applied/:jobId',
+	// isAuthenticated(),
+	// authorizeRoles(UserRole.JOB_SEEKER),
+	applicationControllers.alreadyAppliedJob
+);
+
 // router.delete(
 //   '/jobseeker/:jobSeekerId/job/:jobId',
 //   deleteApplicationByJobAndSeeker

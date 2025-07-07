@@ -208,9 +208,26 @@ const getApplicantsByJobId = async (jobId: string | Types.ObjectId) => {
     };
 };
 
+const alreadyAppliedJob = async (currentUser: JwtPayload, jobId: any) => {
+
+  const application = await ApplicationModel.findOne({
+    job: jobId,
+    applicant: currentUser,
+  });
+
+  if (!application) {
+    throw new ApiError(400, "application Not Found");
+  }
+
+  return {
+    data: !!application,
+  };
+};
+
 export const ApplicationServices = {
     applicationCreate,
     gettingAppliedJobsForUser,
     rejectApplication,
     getApplicantsByJobId,
+    alreadyAppliedJob,
 };

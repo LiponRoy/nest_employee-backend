@@ -11,6 +11,7 @@ export interface IJob {
 	maxSalary: number;
 	experienceLevel: number;
 	location: string;
+	division: string;
 	jobType: string;
 	category: string;
 	// position: number;

@@ -16,6 +16,7 @@ const jobSchema = new Schema<IJob>(
 
 		experienceLevel: { type: Number, required: true },
 		location: { type: String, required: true },
+		division: { type: String, required: true },
 		jobType: { type: String, required: true },
 		category: { type: String, required: true },
 

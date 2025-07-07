@@ -59,6 +59,23 @@ const gettingAppliedJobsForUser = catchAsyncError(
   }
 );
 
+const alreadyAppliedJob = catchAsyncError(
+  async (req: Request, res: Response) => {
+      const { jobId } = req.params;
+    const applicationData = await ApplicationServices.alreadyAppliedJob(
+      req.user,
+      jobId
+    );
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "jobs getting Successfully",
+      data: applicationData,
+    });
+  }
+);
+
 const getApplicantsByJobId = catchAsyncError(
   async (req: Request, res: Response) => {
      const { jobId } = req.params;
@@ -80,4 +97,5 @@ export const applicationControllers = {
   gettingAppliedJobsForUser,
   rejectApplication,
   getApplicantsByJobId,
+  alreadyAppliedJob,
 };
