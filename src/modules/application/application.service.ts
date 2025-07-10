@@ -23,7 +23,7 @@ const applicationCreate = async (
         }).session(session);
 
         if (allreadyApply) {
-            throw new ApiError(400, "You have already applied for this job");
+            throw new ApiError(400, "You have already applied for this job #");
         }
 
         // create application
@@ -83,11 +83,7 @@ const applicationCreate = async (
     }
 };
 
-const rejectApplication = async (
-    jobSeeker_id: any,
-    jobId: string,
-
-) => {
+const rejectApplication = async (jobSeeker_id: any, jobId: string) => {
     if (!Types.ObjectId.isValid(jobSeeker_id)) {
         throw new ApiError(400, "Invalid Job ID");
     }
@@ -127,10 +123,11 @@ const rejectApplication = async (
         if (!JobModelUpdate) {
             throw new ApiError(500, "Failed to update Job model applications.");
         }
-        
-        // delete this application after removie application id from jobModel
-        await ApplicationModel.findByIdAndDelete(application._id).session(session);
 
+        // delete this application after removie application id from jobModel
+        await ApplicationModel.findByIdAndDelete(application._id).session(
+            session
+        );
 
         // Remove the Auth --> myAppliedJobs
         const AuthModelUpdate = await UserModel.findByIdAndUpdate(
@@ -208,20 +205,16 @@ const getApplicantsByJobId = async (jobId: string | Types.ObjectId) => {
     };
 };
 
-const alreadyAppliedJob = async (currentUser: JwtPayload, jobId: any) => {
+const alreadyAppliedJob = async (
+    currentUser: JwtPayload,
+    jobId: string | Types.ObjectId
+) => {
+    const application = await ApplicationModel.findOne({
+        job: jobId,
+        applicant: currentUser?.userId,
+    });
 
-  const application = await ApplicationModel.findOne({
-    job: jobId,
-    applicant: currentUser,
-  });
-
-  if (!application) {
-    throw new ApiError(400, "application Not Found");
-  }
-
-  return {
-    data: !!application,
-  };
+    return { data: !!application };
 };
 
 export const ApplicationServices = {

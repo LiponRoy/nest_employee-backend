@@ -38,7 +38,7 @@ router.patch(
 
 router.get(
 	'/is-applied/:jobId',
-	// isAuthenticated(),
+	isAuthenticated(),
 	// authorizeRoles(UserRole.JOB_SEEKER),
 	applicationControllers.alreadyAppliedJob
 );

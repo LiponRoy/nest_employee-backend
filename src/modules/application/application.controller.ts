@@ -45,7 +45,7 @@ const rejectApplication = catchAsyncError(
 
 const gettingAppliedJobsForUser = catchAsyncError(
   async (req: Request, res: Response) => {
-    console.log("ggg", req.user);
+    // console.log("ggg", req.user);
     const applicationData = await ApplicationServices.gettingAppliedJobsForUser(
       req.user
     );
@@ -59,22 +59,22 @@ const gettingAppliedJobsForUser = catchAsyncError(
   }
 );
 
-const alreadyAppliedJob = catchAsyncError(
-  async (req: Request, res: Response) => {
+const alreadyAppliedJob = catchAsyncError(async (req: Request, res: Response) => {
       const { jobId } = req.params;
+      console.log("controllerxxx : ", req.user)
     const applicationData = await ApplicationServices.alreadyAppliedJob(
       req.user,
       jobId
     );
-
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
-      message: "jobs getting Successfully",
+      message: "already pplied job Successfully",
       data: applicationData,
     });
   }
 );
+
 
 const getApplicantsByJobId = catchAsyncError(
   async (req: Request, res: Response) => {
