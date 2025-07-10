@@ -30,6 +30,13 @@ router.get(
 );
 
 router.patch(
+	'/accept/:jobSeeker_id/:jobId',
+	// isAuthenticated(),
+	// authorizeRoles(UserRole.JOB_SEEKER),
+	applicationControllers.acceptApplication
+);
+
+router.patch(
 	'/reject/:jobSeeker_id/:jobId',
 	// isAuthenticated(),
 	// authorizeRoles(UserRole.JOB_SEEKER),
@@ -42,10 +49,5 @@ router.get(
 	// authorizeRoles(UserRole.JOB_SEEKER),
 	applicationControllers.alreadyAppliedJob
 );
-
-// router.delete(
-//   '/jobseeker/:jobSeekerId/job/:jobId',
-//   deleteApplicationByJobAndSeeker
-// );
 
 export const ApplicationRoutes = router;

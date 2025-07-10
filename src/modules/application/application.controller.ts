@@ -24,6 +24,25 @@ const applicationCreate = catchAsyncError(
   }
 );
 
+const acceptApplication = catchAsyncError(
+  async (req: Request, res: Response) => {
+    const { jobSeeker_id,jobId } = req.params;
+    // const { jobId } = req.body;
+
+    const applicationData = await ApplicationServices.acceptApplication(
+      jobSeeker_id,
+       jobId,
+    );
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "application accepted Successfully",
+      data: applicationData,
+    });
+  }
+);
+
 const rejectApplication = catchAsyncError(
   async (req: Request, res: Response) => {
     const { jobSeeker_id,jobId } = req.params;
@@ -95,6 +114,7 @@ const getApplicantsByJobId = catchAsyncError(
 export const applicationControllers = {
   applicationCreate,
   gettingAppliedJobsForUser,
+  acceptApplication,
   rejectApplication,
   getApplicantsByJobId,
   alreadyAppliedJob,
