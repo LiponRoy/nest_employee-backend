@@ -3,7 +3,7 @@ import sendResponse from '../../utils/sendResponse';
 
 import { catchAsyncError } from '../../utils/catchAsyncErrors';
 import { Request, Response } from 'express';
-import { profileServices } from './package.services';
+import { profileServices } from './profile.services';
 
 const generalInfoUpdate = catchAsyncError(
 	async (req: Request, res: Response) => {

@@ -10,6 +10,12 @@ const generalInfoUpdate = async (
 	const { phone, gender, age, bio, address, about } = payload;
 	const loginUser = currentUser.userId;
 
+	const checkProfile = await profileModel.findOne({ userId: loginUser });
+	// If user not found
+	if (!checkProfile) {
+		throw new ApiError(400, 'User not found');
+	}
+	
 	const updatedProfile = await profileModel.findOneAndUpdate(
 		{ userId: loginUser },
 		{
