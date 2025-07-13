@@ -4,6 +4,7 @@ import { IProfile } from './profile.interface';
 const profileSchema = new Schema<IProfile>(
 	{
 		userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+		
 		generalInfo: {
 			phone: { type: String },
 			gender: { type: String },
@@ -11,6 +12,9 @@ const profileSchema = new Schema<IProfile>(
 			bio: { type: String },
 			address: { type: String },
 			about: { type: String },
+			// pdf cv upload
+			pdf_cloudinary_id: { type: String},
+		    pdf_cloudinary_url: { type: String},
 		},
 		skills: { type: [String] },
 		education: [

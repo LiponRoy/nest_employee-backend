@@ -3,6 +3,7 @@ import { IgeneralInfo } from './profile.interface';
 import { profileModel } from './profile.model';
 import ApiError from '../../errors/ApiError';
 import mongoose from 'mongoose';
+import cloudinary from '../../utils/cloudinary';
 
 const getProfileDataById = async (
 currentUser: JwtPayload
@@ -12,7 +13,7 @@ currentUser: JwtPayload
 	if (!mongoose.Types.ObjectId.isValid(loginUser)) {
         throw new ApiError(400, 'Invalid user ID format');
 }
-	const profileData = await profileModel.findOne({ userId: loginUser });
+	const profileData = await profileModel.findOne({ userId: loginUser }).populate("userId","name role").lean();
 
 	if (!profileData) {
 		throw new ApiError(400, 'Failed to get profile data');
@@ -23,16 +24,43 @@ currentUser: JwtPayload
 
 const generalInfoUpdate = async (
 	payload: IgeneralInfo,
-	currentUser: JwtPayload
+	currentUser: JwtPayload,
+	photoFile: any
 ) => {
+
 	const { phone, gender, age, bio, address, about } = payload;
 	const loginUser = currentUser.userId;
 
-	const checkProfile = await profileModel.findOne({ userId: loginUser });
+	const session = await mongoose.startSession();
+
+	try {
+		session.startTransaction();
+
+	const checkProfile = await profileModel.findOne({ userId: loginUser }).session(session);
 	// If user not found
 	if (!checkProfile) {
 		throw new ApiError(400, 'User not found');
 	}
+
+	// Prepare for Cloudinary upload
+		let result: any = null;
+		if (photoFile) {
+			try {
+				// Upload image to Cloudinary
+				result = await cloudinary.uploader.upload(photoFile.path, {
+					folder: 'nest-emp-profile-img',
+					transformation: [
+						{ width: 800, height: 800, crop: 'limit' }, // Resize image
+						{ quality: 'auto', fetch_format: 'auto' }, // Optimize quality and format
+					],
+				});
+			} catch (cloudinaryError) {
+				throw new ApiError(500, 'Failed to upload image to Cloudinary');
+			}
+		}
+
+	// End Prepare for Cloudinary upload
+
 	
 	const updatedProfile = await profileModel.findOneAndUpdate(
 		{ userId: loginUser },
@@ -45,10 +73,13 @@ const generalInfoUpdate = async (
 					bio,
 					address,
 					about,
+					// new for file
+					pdf_cloudinary_url: result?.secure_url,
+			        pdf_cloudinary_id: result?.public_id,
 				},
 			},
 		},
-		{ new: true }
+		{ new: true,session }
 	);
 
 	// If failed to update profile
@@ -56,7 +87,25 @@ const generalInfoUpdate = async (
 		throw new ApiError(400, 'Failed to Update Profile');
 	}
 
+	// Commit the transaction
+		await session.commitTransaction();
+
 	return updatedProfile;
+		
+	} catch (error: any) {
+		// Rollback the transaction in case of an error
+		await session.abortTransaction();
+		console.log(error);
+		throw new ApiError(
+			400,
+			error.message || 'An error occurred while creating the company.'
+		);
+	} finally {
+		// Ensure the session is always ended
+		session.endSession();
+	}
+
+
 };
 
 const updateSkills = async (skills: string[], currentUser: JwtPayload) => {

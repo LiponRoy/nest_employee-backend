@@ -66,7 +66,6 @@ const companyCreate = async (payload: ICompany, photoFile: any) => {
 	} catch (error: any) {
 		// Rollback the transaction in case of an error
 		await session.abortTransaction();
-		4;
 		console.log(error);
 		throw new ApiError(
 			400,

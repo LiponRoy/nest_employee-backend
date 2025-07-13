@@ -23,7 +23,8 @@ const generalInfoUpdate = catchAsyncError(
 
 		const profileData = await profileServices.generalInfoUpdate(
 			profileInfo,
-			req.user
+			req.user,
+			req.file
 		);
 
 		sendResponse(res, {
