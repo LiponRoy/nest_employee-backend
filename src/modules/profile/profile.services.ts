@@ -2,6 +2,24 @@ import { JwtPayload } from 'jsonwebtoken';
 import { IgeneralInfo } from './profile.interface';
 import { profileModel } from './profile.model';
 import ApiError from '../../errors/ApiError';
+import mongoose from 'mongoose';
+
+const getProfileDataById = async (
+currentUser: JwtPayload
+) => {
+	const loginUser = currentUser?.userId;
+
+	if (!mongoose.Types.ObjectId.isValid(loginUser)) {
+        throw new ApiError(400, 'Invalid user ID format');
+}
+	const profileData = await profileModel.findOne({ userId: loginUser });
+
+	if (!profileData) {
+		throw new ApiError(400, 'Failed to get profile data');
+	}
+
+	return profileData;
+};
 
 const generalInfoUpdate = async (
 	payload: IgeneralInfo,
@@ -116,6 +134,7 @@ const updateExperience = async (
 };
 
 export const profileServices = {
+	getProfileDataById,
 	generalInfoUpdate,
 	updateSkills,
 	updateEducation,

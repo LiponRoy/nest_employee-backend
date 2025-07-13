@@ -5,6 +5,18 @@ import { catchAsyncError } from '../../utils/catchAsyncErrors';
 import { Request, Response } from 'express';
 import { profileServices } from './profile.services';
 
+const getProfileDataById = catchAsyncError(async (req: Request, res: Response) => {
+
+	const result = await profileServices.getProfileDataById(req.user);
+
+	sendResponse<any>(res, {
+		statusCode: httpStatus.OK,
+		success: true,
+		message: 'Pofile get Successfully !',
+		data: result,
+	});
+});
+
 const generalInfoUpdate = catchAsyncError(
 	async (req: Request, res: Response) => {
 		const { ...profileInfo } = req.body;
@@ -68,6 +80,7 @@ const updateExperience = catchAsyncError(
 );
 
 export const profileControllers = {
+	getProfileDataById,
 	generalInfoUpdate,
 	updateSkills,
 	updateEducation,

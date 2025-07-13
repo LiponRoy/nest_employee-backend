@@ -4,6 +4,8 @@ import { profileControllers } from './profile.controller';
 
 const router = express.Router();
 
+
+
 router.put(
 	'/updateGeneralInfo',
 	isAuthenticated(),
@@ -21,6 +23,12 @@ router.put(
 	'/updateExperience',
 	isAuthenticated(),
 	profileControllers.updateExperience
+);
+
+router.get(
+	'/profileDataById/',
+	isAuthenticated(),
+	profileControllers.getProfileDataById
 );
 
 export const profileRoutes = router;
