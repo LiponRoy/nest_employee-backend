@@ -17,6 +17,30 @@ const getProfileDataById = catchAsyncError(async (req: Request, res: Response) =
 	});
 });
 
+const getGeneralInfoData = catchAsyncError(async (req: Request, res: Response) => {
+
+	const result = await profileServices.getGeneralInfoData(req.user);
+
+	sendResponse<any>(res, {
+		statusCode: httpStatus.OK,
+		success: true,
+		message: 'get General Info Data get Successfully !',
+		data: result,
+	});
+});
+
+const getEducationData = catchAsyncError(async (req: Request, res: Response) => {
+
+	const result = await profileServices.getEducationData(req.user);
+
+	sendResponse<any>(res, {
+		statusCode: httpStatus.OK,
+		success: true,
+		message: 'Education data get Successfully !',
+		data: result,
+	});
+});
+
 const generalInfoUpdate = catchAsyncError(
 	async (req: Request, res: Response) => {
 		const { ...profileInfo } = req.body;
@@ -82,6 +106,8 @@ const updateExperience = catchAsyncError(
 
 export const profileControllers = {
 	getProfileDataById,
+	getEducationData,
+	getGeneralInfoData,
 	generalInfoUpdate,
 	updateSkills,
 	updateEducation,

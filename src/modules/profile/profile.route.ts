@@ -32,5 +32,16 @@ router.get(
 	isAuthenticated(),
 	profileControllers.getProfileDataById
 );
+router.get(
+	'/educationDataByLoginUser/',
+	isAuthenticated(),
+	profileControllers.getEducationData
+);
+
+router.get(
+	'/generalInfoDataByLoginUser/',
+	isAuthenticated(),
+	profileControllers.getGeneralInfoData
+);
 
 export const profileRoutes = router;

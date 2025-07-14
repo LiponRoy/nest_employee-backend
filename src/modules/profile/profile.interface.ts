@@ -15,7 +15,7 @@ export interface IEducation {
   instituteName: string;
   degree: string;
   cgpa: string;
-  passingYear: number;
+  passingYear: string;
 }
 
 export interface IExperience {

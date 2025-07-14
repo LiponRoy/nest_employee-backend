@@ -22,7 +22,7 @@ const profileSchema = new Schema<IProfile>(
 				instituteName: { type: String },
 				degree: { type: String },
 				cgpa: { type: String },
-				passingYear: { type: Number },
+				passingYear: { type: String },
 			},
 		],
 		experience: [
