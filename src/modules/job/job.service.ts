@@ -8,7 +8,7 @@ import { CompanyModel } from "../company/company.model";
 import { searchableFields } from "./job.constant";
 import { paginetionHelpers } from "../../helper/paginationHelpers";
 import { ApplicationModel } from "../application/application.model";
-import { UserModel } from "../auth/auth.model";
+import { userModel } from "../auth/auth.model";
 
 const jobCreate = async (payload: any) => {
     const { title, created_by, companyName } = payload;
@@ -171,7 +171,7 @@ const deleteJobById = async (jobId: string) => {
         }).session(session);
 
         // 3. Pull jobId from all users' appliedJobs field
-        const userUpdateResult = await UserModel.updateMany(
+        const userUpdateResult = await userModel.updateMany(
             { myAppliedJobs: jobId },
             { $pull: { myAppliedJobs: jobId } },
             { session }

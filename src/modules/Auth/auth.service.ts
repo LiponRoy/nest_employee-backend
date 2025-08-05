@@ -3,7 +3,7 @@ import config from '../../config';
 import jwt from 'jsonwebtoken';
 import ApiError from '../../errors/ApiError';
 import { IUser } from './auth.interface';
-import { UserModel } from './auth.model';
+import { userModel } from './auth.model';
 import { createToken } from './auth.utils';
 import { profileModel } from '../profile/profile.model';
 import mongoose from 'mongoose';
@@ -15,14 +15,14 @@ const signupUser = async (payload: IUser) => {
 	try {
 		const { email } = payload;
 		// Check if user exists
-		const user = await UserModel.isUserExistsByEmail(email);
+		const user = await userModel.isUserExistsByEmail(email);
 
 		if (user) {
 			throw new ApiError(409, 'User already exists');
 		}
 
 		// create user
-		const newUser = new UserModel({
+		const newUser = new userModel({
 			...payload,
 		});
 		await newUser.save({ session });
@@ -57,14 +57,14 @@ const signupUser = async (payload: IUser) => {
 
 const loginUser = async (payload: IUser) => {
 	// checking if the user is exist
-	const user = await UserModel.isUserExistsByEmail(payload.email);
+	const user = await userModel.isUserExistsByEmail(payload.email);
 
 	if (!user) {
 		throw new ApiError(httpStatus.NOT_FOUND, 'This user is not found !');
 	}
 
 	//checking if the password is correct
-	if (!(await UserModel.isPasswordMatched(payload?.password, user?.password)))
+	if (!(await userModel.isPasswordMatched(payload?.password, user?.password)))
 		throw new ApiError(httpStatus.FORBIDDEN, 'Password do not matched');
 
 	// Generate JWT token
@@ -81,7 +81,7 @@ const loginUser = async (payload: IUser) => {
 };
 
 const profile = async (userId: string) => {
-	const result = await UserModel.findOne({ _id: userId });
+	const result = await userModel.findOne({ _id: userId });
 	return result;
 };
 

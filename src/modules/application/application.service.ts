@@ -5,7 +5,7 @@ import { IApplication } from "./application.interface";
 import { ApplicationModel } from "./application.model";
 import { JwtPayload } from "jsonwebtoken";
 import mongoose, { Types } from "mongoose";
-import { UserModel } from "../auth/auth.model";
+import { userModel } from "../auth/auth.model";
 
 const applicationCreate = async (
   payload: IApplication,
@@ -48,7 +48,7 @@ const applicationCreate = async (
     );
 
     // Update the Auth --> myAppliedJobs
-    const AuthModelUpdate = await UserModel.findByIdAndUpdate(
+    const AuthModelUpdate = await userModel.findByIdAndUpdate(
       currentUser.userId,
       { $push: { myAppliedJobs: jobId } },
       { session }
@@ -97,7 +97,7 @@ const acceptApplication = async (jobSeeker_id: any, jobId: string) => {
     session.startTransaction();
 
     // 1.Find the jobSeeker  if jobSeeker exits or not)
-    const jobSeeker = await UserModel.findById(jobSeeker_id).session(session);
+    const jobSeeker = await userModel.findById(jobSeeker_id).session(session);
     if (!jobSeeker) {
       throw new ApiError(400, "JobSeeker Not Found");
     }
@@ -155,7 +155,7 @@ const rejectApplication = async (jobSeeker_id: any, jobId: string) => {
     session.startTransaction();
 
     // 1.Find the jobSeeker  if jobSeeker exits or not)
-    const jobSeeker = await UserModel.findById(jobSeeker_id).session(session);
+    const jobSeeker = await userModel.findById(jobSeeker_id).session(session);
     if (!jobSeeker) {
       throw new ApiError(400, "JobSeeker Not Found");
     }
@@ -184,7 +184,7 @@ const rejectApplication = async (jobSeeker_id: any, jobId: string) => {
     await ApplicationModel.findByIdAndDelete(application._id).session(session);
 
     // Remove the Auth --> myAppliedJobs
-    const AuthModelUpdate = await UserModel.findByIdAndUpdate(
+    const AuthModelUpdate = await userModel.findByIdAndUpdate(
       jobSeeker_id,
       { $pull: { myAppliedJobs: jobId } },
       { session }
