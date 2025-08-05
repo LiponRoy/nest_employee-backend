@@ -13,7 +13,7 @@ const main = async () => {
 		console.log('Mongodb Connected');
 		// Server creation
 		server = app.listen(config.port, () => {
-			console.log(`App listening on port -YES  ${config.port}`);
+			console.log(`App listening on port -YES.  ${config.port}`);
 		});
 	} catch (error) {
 		console.log(`Failed to connect database ${error}`);

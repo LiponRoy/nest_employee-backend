@@ -1,11 +1,10 @@
 import httpStatus from "http-status";
 import ApiError from "../../errors/ApiError";
-import { IJob, IPagination } from "./job.interface";
+import {IPagination } from "./job.interface";
 import { JobModel } from "./job.model";
 import { JwtPayload } from "jsonwebtoken";
 import mongoose, { SortOrder, Types } from "mongoose";
 import { CompanyModel } from "../company/company.model";
-import cloudinary from "../../utils/cloudinary";
 import { searchableFields } from "./job.constant";
 import { paginetionHelpers } from "../../helper/paginationHelpers";
 import { ApplicationModel } from "../application/application.model";

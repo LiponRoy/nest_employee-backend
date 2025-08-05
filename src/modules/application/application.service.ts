@@ -5,7 +5,7 @@ import { IApplication } from "./application.interface";
 import { ApplicationModel } from "./application.model";
 import { JwtPayload } from "jsonwebtoken";
 import mongoose, { Types } from "mongoose";
-import { UserModel } from "./../auth/auth.model";
+import { UserModel } from "../auth/auth.model";
 
 const applicationCreate = async (
   payload: IApplication,
