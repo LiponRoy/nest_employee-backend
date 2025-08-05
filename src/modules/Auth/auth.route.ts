@@ -4,7 +4,6 @@ import { AuthControllers } from './auth.controller';
 import { AuthValidation } from './auth.validation';
 import validateRequest from '../../middlewares/validateRequest';
 import {
-	authorizeRoles,
 	isAuthenticated,
 } from '../../middlewares/authentication';
 
