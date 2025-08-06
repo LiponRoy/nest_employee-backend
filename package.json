@@ -38,6 +38,7 @@
 		"concurrently": "^9.1.2",
 		"nodemon": "^3.1.9",
 		"ts-node": "^10.9.2",
+		"ts-node-dev": "^2.0.0",
 		"typescript": "^5.9.2"
 	}
 }
