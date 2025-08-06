@@ -4,8 +4,12 @@ import jwt from 'jsonwebtoken';
 import config from '../config';
 import { catchAsyncError } from '../utils/catchAsyncErrors';
 import ApiError from '../errors/ApiError';
-import { UserJwtPayload } from '@modules/auth/auth.interface';
-
+interface UserJwtPayload {
+  userId: string;
+  userRole: ["admin","job_seeker","employer"];
+  iat?: number;
+  exp?: number;
+}
 export const isAuthenticated = () => {
 	return catchAsyncError(
 		async (req: Request, res: Response, next: NextFunction) => {

@@ -50,9 +50,9 @@ export interface IUserModel extends Model<IUser> {
  * Used as the JWT payload
  * and assigned to req.user
  */
-export interface UserJwtPayload {
-  userId: string;
-  userRole: UserRole;
-  iat?: number;
-  exp?: number;
-}
+// export interface UserJwtPayload {
+//   userId: string;
+//   userRole: UserRole;
+//   iat?: number;
+//   exp?: number;
+// }
