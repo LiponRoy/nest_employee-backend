@@ -1,4 +1,4 @@
-import mongoose, { Schema, model } from 'mongoose';
+import { Schema, model, models } from 'mongoose';
 import { IProfile } from './profile.interface';
 
 const profileSchema = new Schema<IProfile>(
@@ -14,7 +14,7 @@ const profileSchema = new Schema<IProfile>(
 			about: { type: String },
 			// pdf cv upload
 			pdf_cloudinary_id: { type: String},
-		    pdf_cloudinary_url: { type: String},
+			pdf_cloudinary_url: { type: String},
 		},
 		skills: { type: [String] },
 		education: [
@@ -38,4 +38,4 @@ const profileSchema = new Schema<IProfile>(
 	}
 );
 
-export const profileModel = model<IProfile>('Profile', profileSchema);
+export const profileModel = models.Profile || model<IProfile>('Profile', profileSchema);
