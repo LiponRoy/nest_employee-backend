@@ -4,7 +4,7 @@ import jwt, { JwtPayload } from 'jsonwebtoken';
 import config from '../config';
 import { catchAsyncError } from '../utils/catchAsyncErrors';
 import ApiError from '../errors/ApiError';
-import { UserJwtPayload } from '../modules/auth/auth.interface';
+import { UserJwtPayload } from '@modules/auth/auth.interface';
 
 export const isAuthenticated = () => {
 	return catchAsyncError(
@@ -43,4 +43,3 @@ export const authorizeRoles = (...roles: any) => {
 		next();
 	};
 };
-

@@ -8,7 +8,7 @@ import { CompanyModel } from "../company/company.model";
 import { searchableFields } from "./job.constant";
 import { paginetionHelpers } from "../../helper/paginationHelpers";
 import { ApplicationModel } from "../application/application.model";
-import { userModel } from "../auth/auth.model";
+import { userModel } from "@modules/auth/auth.model";
 
 const jobCreate = async (payload: any) => {
     const { title, created_by, companyName } = payload;
