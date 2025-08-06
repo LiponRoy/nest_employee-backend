@@ -4,8 +4,8 @@ import jwt from 'jsonwebtoken';
 import ApiError from '../../errors/ApiError';
 import { profileModel } from '../profile/profile.model';
 import mongoose from 'mongoose';
-import { userModel } from './auth.model';
 import { IUser } from './auth.interface';
+import { userModel } from './auth.model';
 
 const signupUser = async (payload: IUser) => {
 	const session = await mongoose.startSession();
