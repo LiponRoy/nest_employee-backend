@@ -1,9 +1,9 @@
-# services:
-#   - type: web
-#     name: nest employee backend
-#     env: node
-#     buildCommand: npm install && npm run build
-#     startCommand: node index.js
-#     envVars:
-#       - key: NODE_ENV
-#         value: production 
+services:
+  - type: web
+    name: nest employee backend
+    env: node
+    buildCommand: npm install && npm run build
+    startCommand: node index.js
+    envVars:
+      - key: NODE_ENV
+        value: production 
