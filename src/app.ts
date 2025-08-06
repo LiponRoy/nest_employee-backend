@@ -1,15 +1,11 @@
 import express, { Application, NextFunction, Request, Response } from 'express';
 import cors from 'cors';
+import router from './routes';
 import cookieParser from 'cookie-parser';
 import globalErrorHandler from './middlewares/globalErrorHandler';
 import notFound from './middlewares/notFound';
-import { CompanyRoutes } from './modules/company/company.route';
-import { JobRoutes } from './modules/job/job.route';
-import { ApplicationRoutes } from './modules/application/application.route';
-import { profileRoutes } from './modules/profile/profile.route';
-import config from './config';
-import { authRoutes } from './modules/auth/auth.route';
 
+import config from './config';
 const app: Application = express();
 
 //parsers
@@ -26,15 +22,12 @@ app.use(
 
 app.use(express.urlencoded({ extended: true }));
 
-app.use('/api/v1/auth', authRoutes);
-app.use('/api/v1/profile', profileRoutes);
-app.use('/api/v1/company', CompanyRoutes);
-app.use('/api/v1/job', JobRoutes);
-app.use('/api/v1/application', ApplicationRoutes);
+// application routes
+app.use('/api/v1', router);
 
 // Testing
-app.get('/test', (req: Request, res: Response, next: NextFunction) => {
-	res.send('This is Testing Router...');
+app.get('/', (req: Request, res: Response, next: NextFunction) => {
+	res.send('Hi Nest Employee...');
 });
 
 // error middleware ...

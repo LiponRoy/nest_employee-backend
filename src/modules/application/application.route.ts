@@ -1,5 +1,4 @@
 import express from 'express';
-
 import { applicationControllers } from './application.controller';
 import {
 	authorizeRoles,

@@ -1,9 +1,9 @@
 import httpStatus from 'http-status';
 import sendResponse from '../../utils/sendResponse';
-import { AuthServices } from './auth.service';
 import config from '../../config';
 import { catchAsyncError } from '../../utils/catchAsyncErrors';
 import { Request, Response } from 'express';
+import { AuthServices } from './auth.service';
 
 const signupUser = catchAsyncError(async (req: Request, res: Response) => {
 	const { ...user } = req.body;

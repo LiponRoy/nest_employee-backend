@@ -1,7 +1,5 @@
 import express from 'express';
 
-import { CompanyValidation } from './company.validation';
-import validateRequest from '../../middlewares/validateRequest';
 import {
 	authorizeRoles,
 	isAuthenticated,
