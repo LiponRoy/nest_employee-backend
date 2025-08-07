@@ -22,11 +22,13 @@ const loginUser = catchAsyncError(async (req: Request, res: Response) => {
 	const result = await AuthServices.loginUser(req.body);
 	const { authToken, user } = result;
 
+const isProduction = config.node_env === 'production';
+
 	res.cookie('authToken', authToken, {
-		secure: config.node_env === 'production',
-		httpOnly: true,
-		sameSite: 'strict',
-		maxAge: 1000 * 60 * 60 * 24 * 365,
+	httpOnly: true,
+    secure: isProduction, // HTTPS only in production
+    sameSite: isProduction ? 'none' : 'lax', // cross-origin support only in prod
+    maxAge: 1000 * 60 * 60 * 24 * 365, // 1 year
 	});
 
 	sendResponse(res, {

@@ -7,8 +7,9 @@ import handleZodError from '../errors/handleZodError';
 import { ZodError } from 'zod';
 import handleCastError from '../errors/handleCastError';
 import handleDuplicateError from '../errors/handleDuplicateError';
+import { Request, Response, NextFunction } from 'express';
 
-const globalErrorHandler: ErrorRequestHandler = (error, req, res, next) => {
+const globalErrorHandler: ErrorRequestHandler = (error:any, req:Request, res:Response, next:NextFunction) => {
 	let statusCode = 500;
 	let message = 'Something went wrong';
 	let errorMessage: IGenericErrorMessage[] = [];
