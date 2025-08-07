@@ -10,12 +10,6 @@
     "outDir": "./dist",
     "rootDir": "./src",
     "types": ["node"],
-    "baseUrl": "./src",
-    "paths": {
-      "@modules/*": ["modules/*"],
-      "@utils/*": ["utils/*"],
-      "@config/*": ["config/*"]
-    }
   },
   "include": ["src"],
   "exclude": ["node_modules"]

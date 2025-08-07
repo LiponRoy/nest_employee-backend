@@ -3,7 +3,7 @@ import { ApplicationRoutes } from '../modules/application/application.route';
 import { CompanyRoutes } from '../modules/company/company.route';
 import { JobRoutes } from '../modules/job/job.route';
 import { profileRoutes } from '../modules/profile/profile.route';
-import { authRoutes } from '@modules/acl/auth.route';
+import { authRoutes } from '../modules/acl/auth.route';
 
 
 const router = Router();
