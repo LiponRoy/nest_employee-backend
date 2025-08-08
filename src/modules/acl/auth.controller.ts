@@ -43,11 +43,15 @@ const isProduction = config.node_env === 'production';
 });
 
 const logout = catchAsyncError(async (req: Request, res: Response) => {
-	//res.clearCookie('refressToken');
-	res.cookie('authToken', null, {
-		expires: new Date(Date.now()),
-		httpOnly: true,
-	});
+
+	const isProduction = config.node_env === 'production';
+
+      res.clearCookie('authToken', {
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: isProduction ? 'none' : 'lax',
+      path: '/', // ensure same path
+     });
 
 	sendResponse(res, {
 		statusCode: httpStatus.OK,
