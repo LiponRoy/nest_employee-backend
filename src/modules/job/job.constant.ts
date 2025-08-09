@@ -1,7 +1,7 @@
 // search field
-export const searchableFields = ['category', 'title', 'description'];
+export const searchableFields = ['category', 'title', 'description','division'];
 
-export const filterableFields = ['searchTerm', 'gender', 'jobType', 'category'];
+export const filterableFields = ['searchTerm', 'gender', 'jobType', 'category','division'];
 
 export const paginationsFields = ['page', 'limit', 'sortBy', 'sortOrder'];
 
