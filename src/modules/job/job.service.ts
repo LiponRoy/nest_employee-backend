@@ -5,7 +5,7 @@ import { JobModel } from "./job.model";
 import { JwtPayload } from "jsonwebtoken";
 import mongoose, { SortOrder, Types } from "mongoose";
 import { CompanyModel } from "../company/company.model";
-import { searchableFields } from "./job.constant";
+import { allCategory, searchableFields } from "./job.constant";
 import { paginetionHelpers } from "../../helper/paginationHelpers";
 import { ApplicationModel } from "../application/application.model";
 import { userModel } from "../acl/auth.model";
@@ -68,17 +68,33 @@ const allJob = async (filters: any, paginationFields: IPagination) => {
 
     const andConditions = [];
 
+      // for searching based on country
+      if (typeof searchTerm === "string") {
+  if (searchTerm===allCategory || searchTerm==="") {
+    andConditions.push({})
+  }else{
+    andConditions.push({
+      $or: searchableFields.map((field) => ({
+        [field]: {
+          $regex: searchTerm,
+          $options: "i",
+        },
+      })),
+    });
+}
+  }
+
     // for searching based on category
-    if (typeof searchTerm === "string") {
-        andConditions.push({
-            $or: searchableFields.map((field) => ({
-                [field]: {
-                    $regex: searchTerm,
-                    $options: "i",
-                },
-            })),
-        });
-    }
+    // if (typeof searchTerm === "string") {
+    //     andConditions.push({
+    //         $or: searchableFields.map((field) => ({
+    //             [field]: {
+    //                 $regex: searchTerm,
+    //                 $options: "i",
+    //             },
+    //         })),
+    //     });
+    // }
 
     // for filtering
     if (Object.keys(filtersData).length) {
