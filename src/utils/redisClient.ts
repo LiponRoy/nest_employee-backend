@@ -1,22 +1,39 @@
-// utils/redisClient.ts
-import { createClient } from 'redis';
+// src/utils/redisClient.ts
+import { createClient } from "redis";
 
-const redisClient = createClient({
-  url: process.env.REDIS_URL,
-});
+let redisClient: ReturnType<typeof createClient> | null = null;
+let isConnecting = false;
 
-redisClient.on('connect', () => {
-  console.log(' Redis connected');
-});
-
-redisClient.on('error', (err) => {
-  console.error(' Redis error:', err);
-});
-
-const connectRedis = async () => {
-  if (!redisClient.isOpen) {
-    await redisClient.connect();
+export const getRedisClient = async () => {
+  if (redisClient && redisClient.isOpen) {
+    return redisClient;
   }
-};
 
-export { redisClient, connectRedis };
+  if (!redisClient) {
+    redisClient = createClient({
+      url: process.env.REDIS_URL,
+    });
+
+    redisClient.on("connect", () => {
+      console.log("✅ Redis connected");
+    });
+
+    redisClient.on("error", (err) => {
+      console.error("❌ Redis error:", err);
+    });
+  }
+
+  if (!redisClient.isOpen && !isConnecting) {
+    try {
+      isConnecting = true;
+      await redisClient.connect();
+    } catch (err) {
+      console.error("❌ Redis connection failed:", err);
+      throw new Error("Redis client not connected");
+    } finally {
+      isConnecting = false;
+    }
+  }
+
+  return redisClient;
+};

@@ -9,7 +9,7 @@ import { allCategory, searchableFields } from "./job.constant";
 import { paginetionHelpers } from "../../helper/paginationHelpers";
 import { ApplicationModel } from "../application/application.model";
 import { userModel } from "../acl/auth.model";
-import { redisClient } from "@utils/redisClient";
+import { getRedisClient } from "@utils/redisClient";
 
 const jobCreate = async (payload: any) => {
     const { title, created_by, companyName } = payload;
@@ -68,20 +68,43 @@ export const allJob = async (filters: any, paginationFields: IPagination) => {
   const { searchTerm, ...filtersData } = filters;
   const andConditions = [];
 
-  // Generate unique cache key based on filters & pagination
-  const CACHE_KEY = `${process.env.REDIS_CACHE_KEY_PREFIX || "cache"}:jobs:${JSON.stringify(filters)}:page:${paginationFields.page}:limit:${paginationFields.limit}`;
-  const TTL = parseInt(process.env.REDIS_TTL || "60"); // default 60s
-  const start = Date.now();
+  const { page, limit, skip, sortBy, sortOrder } =
+    paginetionHelpers.calculatePaginetion(paginationFields);
 
-  // Try fetching from Redis
-  const cachedData:any = await redisClient.get(CACHE_KEY);
-  if (cachedData) {
-    console.log("🚀 Cache HIT");
-    console.log(`⏱ Redis fetch took: ${Date.now() - start}ms`);
-    return JSON.parse(cachedData);
+  const sortConditions: Record<string, SortOrder> = {};
+  if (sortBy && sortOrder) {
+    sortConditions[sortBy] = sortOrder;
   }
 
-  console.log("🐢 Cache MISS");
+  const whereConditions =
+    andConditions.length > 0 ? { $and: andConditions } : {};
+
+  // Radis start
+
+  // ✅ Build cache key based on filters & pagination
+  const CACHE_KEY = `${process.env.REDIS_CACHE_KEY_PREFIX || "jobs"}:${JSON.stringify(
+    filters
+  )}:page:${page}:limit:${limit}`;
+  const TTL = parseInt(process.env.REDIS_TTL || "60", 10);
+
+  const start = Date.now();
+
+  let redis: any;
+  try {
+    redis = await getRedisClient();
+
+    const cachedData = await redis.get(CACHE_KEY);
+    if (cachedData) {
+      console.log("🚀 Cache HIT");
+      console.log(`⏱ Redis fetch took: ${Date.now() - start}ms`);
+      return JSON.parse(cachedData);
+    }
+    console.log("🐢 Cache MISS");
+  } catch (err: any) {
+    console.error("⚠️ Redis unavailable, fallback to DB:", err.message);
+  }
+
+  // Radis end
 
   // --- Searching by country/category ---
   if (typeof searchTerm === "string") {
@@ -108,20 +131,6 @@ export const allJob = async (filters: any, paginationFields: IPagination) => {
     });
   }
 
-  // --- Pagination ---
-  const { page, limit, skip, sortBy, sortOrder } =
-    paginetionHelpers.calculatePaginetion(paginationFields);
-
-  // --- Sorting ---
-  const sortConditions: Record<string, SortOrder> = {};
-  if (sortBy && sortOrder) {
-    sortConditions[sortBy] = sortOrder;
-  }
-
-  const whereConditions =
-    andConditions.length > 0 ? { $and: andConditions } : {};
-
-  // Fetch from DB
   const jobs = await JobModel.find(whereConditions)
     .populate("companyId")
     .lean()
@@ -144,8 +153,19 @@ export const allJob = async (filters: any, paginationFields: IPagination) => {
     data: jobs,
   };
 
-  // Cache result
-  await redisClient.setEx(CACHE_KEY, TTL, JSON.stringify(result));
+  // Radis start
+  // ✅ Cache result (only if Redis is connected)
+  if (redis) {
+    try {
+      await redis.setEx(CACHE_KEY, TTL, JSON.stringify(result));
+    } catch (err) {
+      console.error("⚠️ Failed to cache in Redis:", err);
+    }
+  }
+
+  console.log(`⏱ DB fetch took: ${Date.now() - start}ms`);
+  // Radis end
+
 
   return result;
 };
