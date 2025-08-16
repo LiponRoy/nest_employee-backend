@@ -11,16 +11,25 @@ const app: Application = express();
 //parsers
 app.use(express.json());
 app.use(cookieParser());
-//middlewares
-// app.use(cors());
-app.use(
-	cors({
-		origin: config.frontend_URL,
-		credentials: true, // Allow cookies
-	})
-);
-
 app.use(express.urlencoded({ extended: true }));
+//middlewares
+const allowedOrigins = [
+  config.frontend_URL,
+  config.frontend_deployed_URL,
+];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      console.error(`CORS blocked.: ${origin}`);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+}));
+
 
 // application routes
 app.use('/api/v1', router);

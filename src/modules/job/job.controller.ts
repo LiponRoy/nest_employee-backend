@@ -22,6 +22,7 @@ const jobCreate = catchAsyncError(async (req: Request, res: Response) => {
 		data: jobData,
 	});
 });
+
 const allJob = catchAsyncError(async (req: Request, res: Response) => {
 	const paginationOptions = queryFilter(req.query, paginationsFields);
 

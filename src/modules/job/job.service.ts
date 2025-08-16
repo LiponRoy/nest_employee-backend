@@ -9,6 +9,7 @@ import { allCategory, searchableFields } from "./job.constant";
 import { paginetionHelpers } from "../../helper/paginationHelpers";
 import { ApplicationModel } from "../application/application.model";
 import { userModel } from "../acl/auth.model";
+import { redisClient } from "@utils/redisClient";
 
 const jobCreate = async (payload: any) => {
     const { title, created_by, companyName } = payload;
@@ -63,87 +64,92 @@ const jobCreate = async (payload: any) => {
     }
 };
 
-const allJob = async (filters: any, paginationFields: IPagination) => {
-    const { searchTerm, ...filtersData } = filters;
+export const allJob = async (filters: any, paginationFields: IPagination) => {
+  const { searchTerm, ...filtersData } = filters;
+  const andConditions = [];
 
-    const andConditions = [];
+  // Generate unique cache key based on filters & pagination
+  const CACHE_KEY = `${process.env.REDIS_CACHE_KEY_PREFIX || "cache"}:jobs:${JSON.stringify(filters)}:page:${paginationFields.page}:limit:${paginationFields.limit}`;
+  const TTL = parseInt(process.env.REDIS_TTL || "60"); // default 60s
+  const start = Date.now();
 
-      // for searching based on country
-      if (typeof searchTerm === "string") {
-  if (searchTerm===allCategory || searchTerm==="") {
-    andConditions.push({})
-  }else{
-    andConditions.push({
-      $or: searchableFields.map((field) => ({
-        [field]: {
-          $regex: searchTerm,
-          $options: "i",
-        },
-      })),
-    });
-}
+  // Try fetching from Redis
+  const cachedData:any = await redisClient.get(CACHE_KEY);
+  if (cachedData) {
+    console.log("🚀 Cache HIT");
+    console.log(`⏱ Redis fetch took: ${Date.now() - start}ms`);
+    return JSON.parse(cachedData);
   }
 
-    // for searching based on category
-    // if (typeof searchTerm === "string") {
-    //     andConditions.push({
-    //         $or: searchableFields.map((field) => ({
-    //             [field]: {
-    //                 $regex: searchTerm,
-    //                 $options: "i",
-    //             },
-    //         })),
-    //     });
-    // }
+  console.log("🐢 Cache MISS");
 
-    // for filtering
-    if (Object.keys(filtersData).length) {
-        andConditions.push({
-            $and: Object.entries(filtersData).map(([field, value]) => ({
-                [field]: value,
-            })),
-        });
+  // --- Searching by country/category ---
+  if (typeof searchTerm === "string") {
+    if (searchTerm === allCategory || searchTerm === "") {
+      andConditions.push({});
+    } else {
+      andConditions.push({
+        $or: searchableFields.map((field) => ({
+          [field]: {
+            $regex: searchTerm,
+            $options: "i",
+          },
+        })),
+      });
     }
+  }
 
-    // for pagination
-    const { page, limit, skip, sortBy, sortOrder } =
-        paginetionHelpers.calculatePaginetion(paginationFields);
-    // End for pagination
+  // --- Filtering ---
+  if (Object.keys(filtersData).length) {
+    andConditions.push({
+      $and: Object.entries(filtersData).map(([field, value]) => ({
+        [field]: value,
+      })),
+    });
+  }
 
-    // for sorting
-    const sortConditions: Record<string, SortOrder> = {};
+  // --- Pagination ---
+  const { page, limit, skip, sortBy, sortOrder } =
+    paginetionHelpers.calculatePaginetion(paginationFields);
 
-    if (sortBy && sortOrder) {
-        sortConditions[sortBy] = sortOrder;
-    }
-    // End for sorting
+  // --- Sorting ---
+  const sortConditions: Record<string, SortOrder> = {};
+  if (sortBy && sortOrder) {
+    sortConditions[sortBy] = sortOrder;
+  }
 
-    const whereConditions =
-        andConditions.length > 0 ? { $and: andConditions } : {};
+  const whereConditions =
+    andConditions.length > 0 ? { $and: andConditions } : {};
 
-    const jobs = await JobModel.find(whereConditions)
-        .populate("companyId")
-        .lean()
-        .sort(sortConditions)
-        .skip(skip)
-        .limit(limit);
+  // Fetch from DB
+  const jobs = await JobModel.find(whereConditions)
+    .populate("companyId")
+    .lean()
+    .sort(sortConditions)
+    .skip(skip)
+    .limit(limit);
 
-    if (!jobs) {
-        throw new ApiError(409, "jobs not found .");
-    }
+  if (!jobs || jobs.length === 0) {
+    throw new ApiError(409, "Jobs not found.");
+  }
 
-    const total = await JobModel.countDocuments(whereConditions);
+  const total = await JobModel.countDocuments(whereConditions);
 
-    // return jobs;
-    return {
-        meta: {
-            page,
-            limit,
-            total,
-        },
-        data: jobs,
-    };
+  const result = {
+    meta: {
+      page,
+      limit,
+      total,
+    },
+    data: jobs,
+  };
+
+  // Cache result
+  await redisClient.setEx(CACHE_KEY, TTL, JSON.stringify(result));
+
+  return result;
 };
+
 
 const getJobByCreator = async (currentUser: JwtPayload) => {
     console.log("job cus:", currentUser);
