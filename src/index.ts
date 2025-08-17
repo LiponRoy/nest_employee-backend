@@ -4,19 +4,16 @@ import config from './config';
 
 import { Server } from 'http';
 import app from './app';
-import { getRedisClient } from '@utils/redisClient';
+// import { getRedisClient } from '@utils/redisClient';
+import { connectDB } from './utils/db';
 
 let server: Server;
 //console.log(ab);
 const main = async () => {
 	try {
 		// Mongodb connection
-		await mongoose.connect(config.mongodb_url as string);
-		console.log('Mongodb Connected');
+		await connectDB();
 
-		// Redis connection
-    await getRedisClient(); // <-- connect Redis once
-    console.log('✅ Redis connected');
 		// Server creation
 		server = app.listen(config.port, () => {
 			console.log(`App listening on port -YES.  ${config.port}`);

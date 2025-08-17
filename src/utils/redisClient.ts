@@ -1,4 +1,4 @@
-// src/utils/redisClient.ts
+import config from "../config/index";
 import { createClient } from "redis";
 
 let redisClient: ReturnType<typeof createClient> | null = null;
@@ -10,17 +10,20 @@ export const getRedisClient = async () => {
   }
 
   if (!redisClient) {
+    const isTls = config.redis.redis_url?.startsWith("rediss://");
+
     redisClient = createClient({
-      url: process.env.REDIS_URL,
+      url: config.redis.redis_url || process.env.REDIS_URL,
+      socket: isTls
+        ? {
+            tls: true as const, // 👈 force literal type
+            rejectUnauthorized: false,
+          }
+        : {}, // 👈 no socket config for non-TLS
     });
 
-    redisClient.on("connect", () => {
-      console.log("✅ Redis connected");
-    });
-
-    redisClient.on("error", (err) => {
-      console.error("❌ Redis error:", err);
-    });
+    redisClient.on("connect", () => console.log("✅ Redis connected"));
+    redisClient.on("error", (err) => console.error("❌ Redis error:", err));
   }
 
   if (!redisClient.isOpen && !isConnecting) {

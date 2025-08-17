@@ -24,6 +24,7 @@ export default {
     port: Number(process.env.REDIS_PORT!),
     password: process.env.REDIS_PASSWORD!,
     tls: process.env.REDIS_TLS === "true" ? {} : undefined,
+	redis_url:process.env.REDIS_URL
   },
   cache: {
     ttl: Number(process.env.REDIS_CACHE_TTL) || 300, // default 5 min
