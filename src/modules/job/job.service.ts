@@ -9,7 +9,8 @@ import { allCategory, searchableFields } from "./job.constant";
 import { paginetionHelpers } from "../../helper/paginationHelpers";
 import { ApplicationModel } from "../application/application.model";
 import { userModel } from "../acl/auth.model";
-import { getRedisClient } from "@utils/redisClient";
+import { getRedisClient } from "../../utils/redis_client";
+
 
 const jobCreate = async (payload: any) => {
     const { title, created_by, companyName } = payload;

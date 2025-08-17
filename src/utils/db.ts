@@ -1,4 +1,4 @@
-import config from "@config/index";
+import config from "../config/index";
 import mongoose from "mongoose";
 
 let isConnected = false;
