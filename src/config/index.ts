@@ -27,6 +27,6 @@ export default {
 	redis_url:process.env.REDIS_URL
   },
   cache: {
-    ttl: Number(process.env.REDIS_CACHE_TTL) || 300, // default 5 min
+    ttl: Number(process.env.REDIS_CACHE_TTL) || 300, // default 5 min.
   },
 };
