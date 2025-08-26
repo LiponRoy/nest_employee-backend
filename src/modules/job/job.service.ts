@@ -112,9 +112,9 @@ export const allJob = async (filters: any, paginationFields: IPagination) => {
     .skip(skip)
     .limit(limit);
 
-  if (!jobs || jobs.length === 0) {
-    throw new ApiError(409, "Jobs not found.");
-  }
+  // if (!jobs || jobs.length === 0) {
+  //   throw new ApiError(409, "Jobs not found.");
+  // }
 
   const total = await JobModel.countDocuments(whereConditions);
 
